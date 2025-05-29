@@ -17,8 +17,7 @@ function trierCategory(works){
 
             for (let i = 0; i < works.length; i++) {
                 const categoryId = works[i].category.id;
-                console.log(categoryId);
-
+                
                     if (!worksCategory[categoryId]) {
                         worksCategory[categoryId] = {
                             name: works[i].category.name,
@@ -27,51 +26,61 @@ function trierCategory(works){
                     };
                 worksCategory[categoryId].item.push(works[i]);
             };
-                console.log(worksCategory);
-}
+               console.log(worksCategory);
 
+
+}
 
             
 
 
                 //Création des boutons filtres ( balises du DOM ) //
-        const btnFiltre = document.querySelector(".btn-filtre")
-        let btnTous = document.querySelector(".btn-filtre");
-
+        
         btnTous = document.createElement("button");
         btnTous.textContent = "Tous";
         btnTous.addEventListener("click", function() {
-        
-        })
+            console.log("Afiicher tous les travaux");
+            trierCategory(works);
+        });
 
         //const btnFiltre = document.querySelector(".btn-filtre")
-        let btnObjet = document.querySelector(".btn-filtre");
+        
 
         btnObjet = document.createElement("button");
         btnObjet.textContent = "Objets";
         btnObjet.addEventListener("click", function() {
-
-        })
+            const categoryId = 1;
+            console.log("Afficher la catégorie objets")
+            trierCategory(works[1]);
+        });
         
 
         //const btnFiltre = document.querySelector(".btn-filtre")
-        let btnAppart = document.querySelector(".btn-filtre");
+        
 
         btnAppart = document.createElement("button");
         btnAppart.textContent = "Appartements";
         btnAppart.addEventListener("click", function() {
+            const categoryId = 2;
+            console.log("Afficher la catégorie appartements")
+            trierCategory(worksCategory[2]);
 
         })
         
 
         //const btnFiltre = document.querySelector(".btn-filtre")
-        let btnHotel = document.querySelector(".btn-filtre");
+        
 
         btnHotel = document.createElement("button");
         btnHotel.textContent = "Hôtels & Restaurants";
         btnHotel.addEventListener("click", function() {
+            const categoryId = 3;
+            console.log("Afficher la catégorie hôtels & restaurants")
+            trierCategory(worksCategory[3]);
 
         })
+
+        const btnFiltre = document.querySelector(".btn-filtre");
 
         btnFiltre.appendChild(btnTous);
         btnFiltre.appendChild(btnObjet);
@@ -83,10 +92,10 @@ function trierCategory(works){
                     // Apelle à la fonction genereWorks //
                     
     genereWorks(works);
-    trierCategory(works);
     
+}    
     
-}
+
            
             // Apelle à la fonction getWorks //
     getWorks();

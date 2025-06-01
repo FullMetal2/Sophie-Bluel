@@ -14,16 +14,17 @@ genereWorks(works);
         /// Filtrage par catégories ///    
 
         
-        let worksCategory = works;
-        trierCategory(works);
+        let worksCategory = trierCategory(works);
+        
         
         //Création des boutons filtres ( balises du DOM ) //
         
-        btnTous = document.createElement("button");
+        btnTous = document.createElement("button")
         btnTous.textContent = "Tous";
         btnTous.addEventListener("click", function() {
             console.log("Afiicher tous les travaux");
-            worksCategory;
+            document.querySelector(".gallery").innerHTML = "";
+            genereWorks(works);
         });
 
         //const btnFiltre = document.querySelector(".btn-filtre")
@@ -32,9 +33,11 @@ genereWorks(works);
         btnObjet = document.createElement("button");
         btnObjet.textContent = "Objets";
         btnObjet.addEventListener("click", function() {
-            const categoryId = 0;
+            const categoryId = 1;
             console.log("Afficher la catégorie objets")
-            console.log(worksCategory[categoryId])
+            console.log(worksCategory[categoryId]);
+                document.querySelector(".gallery").innerHTML = "";
+                genereWorks(worksCategory[categoryId].item);
         });
         
 
@@ -44,9 +47,11 @@ genereWorks(works);
         btnAppart = document.createElement("button");
         btnAppart.textContent = "Appartements";
         btnAppart.addEventListener("click", function() {
-            const categoryId = 1;
+            const categoryId = 2;
             console.log("Afficher la catégorie appartements")
             console.log(worksCategory[categoryId])
+                document.querySelector(".gallery").innerHTML = "";
+                genereWorks(worksCategory[categoryId].item);
 
         })
         
@@ -57,9 +62,11 @@ genereWorks(works);
         btnHotel = document.createElement("button");
         btnHotel.textContent = "Hôtels & Restaurants";
         btnHotel.addEventListener("click", function() {
-            const categoryId = 2;
+            const categoryId = 3;
             console.log("Afficher la catégorie hôtels & restaurants")
             console.log(worksCategory[categoryId]);
+                document.querySelector(".gallery").innerHTML = "";
+                genereWorks(worksCategory[categoryId].item);
 
         })
 
@@ -101,9 +108,9 @@ function trierCategory(works){
                     };
                 worksCategory[categoryId].item.push(works[i]);
                 
+                
             };
-            
-            console.log(worksCategory);
+            return worksCategory;
                
 }
 

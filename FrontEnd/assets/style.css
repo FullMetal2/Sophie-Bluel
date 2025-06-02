@@ -212,3 +212,12 @@ footer nav ul {
 	margin: 2em
 }
 
+/***Page de login***/
+#form-login {
+	display: flex;
+	flex-direction: column;
+}
+
+.logins {
+	display: none;
+}

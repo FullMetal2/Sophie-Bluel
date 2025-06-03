@@ -65,17 +65,21 @@ async function login(email, password) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({email, password})
+                body: JSON.stringify({email, password}),
         });
+
             if (!response.ok) {
                 throw new Error("Erreur lors de la connexion");
             }
             const user = await response.json();
+                document.location.href = "index.html";
                 console.log("Réponse connexion API :", user);
-            document.location.href = "index.html";
-    } catch (error) {
-            console.error("Erreur :", error.message);
-    }
+                        window.localStorage.setItem("Stoké user", JSON.stringify(user));
+                        const storeUser = window.localStorage.getItem("Stoké user");
+                        console.log("Données stokées dans le localstorage :", JSON.parse(storeUser));
+            } catch (error) {
+                    console.error("Erreur :", error.message);
+            }
 }
             
 

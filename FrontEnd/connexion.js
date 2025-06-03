@@ -1,8 +1,8 @@
             /////  Afficher la page de connexion /////
 
-    
+    const Filtre = document.querySelector(".btn-filtre")
     const btnLogin = document.querySelector("#login");
-    const body =document.querySelector("body");        
+    const body = document.querySelector("body");        
         btnLogin.addEventListener("click", () => {
             const elementMain = document.querySelector('main')
             elementMain.style.display = 'none';
@@ -46,19 +46,21 @@
         const passwordInput = document.querySelector("#password")
         const formlogin = document.querySelector("#form-login")
         const errorEmail = document.querySelector(".error")
-        const errorMdp = document.querySelector(".errorMdp")
+        
         // écouteur d'évenement sur l'input se connecter //
 
             formlogin.addEventListener("submit", (event) => {
                 event.preventDefault();
-                console.log("Formulaire non envoyé ok")
+                console.log("Formulaire non envoyé ok");
 
             const email = emailInput.value;
             const password = passwordInput.value;
-            console.log(email, password)
+            console.log(email, password);
 
             login(email, password);
+            
         });
+        
             
         ///// Connexion User /////
 async function login(email, password) {
@@ -68,7 +70,7 @@ async function login(email, password) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({email, password}),
+                body: JSON.stringify({email, password})
         });
 
             if (!response.ok) {
@@ -76,15 +78,16 @@ async function login(email, password) {
             }
             const user = await response.json();
                 document.location.href = "index.html";
-                console.log("Réponse connexion API :", user);
+                    console.log("Réponse connexion API :", user);
                         window.localStorage.setItem("Stoké user", JSON.stringify(user));
                         const storeUser = window.localStorage.getItem("Stoké user");
                         console.log("Données stokées dans le localstorage :", JSON.parse(storeUser));
             } catch (error) {
-                    errorEmail.innerText = "E-mail ou mot de passe incorrecte"
+                    errorEmail.innerText = "E-mail ou mot de passe incorrecte";
                     console.error("Erreur :", error.message);
-            }
+            };
 }
+
             
 
 

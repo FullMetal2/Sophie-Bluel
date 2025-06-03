@@ -21,11 +21,11 @@
                     <form action"#" method="POST" id="form-login">
                         <div>
                             <div>
-                                <label for="email" class="label-co" id="email">E-mail</label>
+                                <label for="email" class="label-co">E-mail</label>
                                 <input type="email" id="email" name="email" required>
                             </div>
                             <div>
-                                <label for="password" class="label-co" id="password">Mot de passe</label>
+                                <label for="password" class="label-co">Mot de passe</label>
                                 <input type="password" id="password" name="password" required>
                             </div>
                         </div>
@@ -71,7 +71,7 @@ async function login(email, password) {
                 throw new Error("Erreur lors de la connexion");
             }
             const user = await response.json();
-                console.log("Réponse API :", user);
+                console.log("Réponse connexion API :", user);
             document.location.href = "index.html";
     } catch (error) {
             console.error("Erreur :", error.message);

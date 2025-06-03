@@ -20,21 +20,23 @@
                 <h2>Log In</h2>
                     <form action"#" method="POST" id="form-login">
                         <div>
+                                <div class="error"></div>
                             <div>
                                 <label for="email" class="label-co">E-mail</label>
                                 <input type="email" id="email" name="email" required>
                             </div>
+                            
                             <div>
                                 <label for="password" class="label-co">Mot de passe</label>
                                 <input type="password" id="password" name="password" required>
                             </div>
-                        </div>
                             <div>
                                 <input type="submit" value="Se connecter"/>
                             </div>
                             <div class="password">
                                 <a href="#">Mot de passe oublié</a>
                             </div>
+                        </div>
                     </form>`;
 
             
@@ -43,7 +45,8 @@
         const emailInput = document.querySelector("#email")
         const passwordInput = document.querySelector("#password")
         const formlogin = document.querySelector("#form-login")
-
+        const errorEmail = document.querySelector(".error")
+        const errorMdp = document.querySelector(".errorMdp")
         // écouteur d'évenement sur l'input se connecter //
 
             formlogin.addEventListener("submit", (event) => {
@@ -78,6 +81,7 @@ async function login(email, password) {
                         const storeUser = window.localStorage.getItem("Stoké user");
                         console.log("Données stokées dans le localstorage :", JSON.parse(storeUser));
             } catch (error) {
+                    errorEmail.innerText = "E-mail ou mot de passe incorrecte"
                     console.error("Erreur :", error.message);
             }
 }

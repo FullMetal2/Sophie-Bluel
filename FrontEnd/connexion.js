@@ -2,12 +2,16 @@
 
     
     const btnLogin = document.querySelector("#login");
-
+    const body =document.querySelector("body");        
         btnLogin.addEventListener("click", () => {
             const elementMain = document.querySelector('main')
-            elementMain.innerHTML="";
+            elementMain.style.display = 'none';
             const elementForm = document.querySelector(".logins");
             elementForm.classList.add("visible-form");
+            body.style.display = "flex";
+            body.style.justifyContent = "center";
+            body.style.flexDirection = "column";
+            body.style.height = "100vh";
         })
 
         

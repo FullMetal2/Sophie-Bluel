@@ -21,11 +21,11 @@
                     <form action"#" method="POST" id="form-login">
                         <div>
                             <div>
-                                <label for="email" class="label-co">E-mail</label>
+                                <label for="email" class="label-co" id="email">E-mail</label>
                                 <input type="email" id="email" name="email" required>
                             </div>
                             <div>
-                                <label for="password" class="label-co">Mot de passe</label>
+                                <label for="password" class="label-co" id="password">Mot de passe</label>
                                 <input type="password" id="password" name="password" required>
                             </div>
                         </div>
@@ -37,4 +37,55 @@
                             </div>
                     </form>`;
 
-        logins.appendChild(loginForm);
+            
+        ///// Récupération des data user /////
+
+        const emailInput = document.querySelector("#email")
+        const passwordInput = document.querySelector("#password")
+        const formlogin = document.querySelector("#form-login")
+
+        // écouteur d'évenement sur l'input se connecter //
+
+            formlogin.addEventListener("submit", (event) => {
+                event.preventDefault();
+                console.log("Formulaire non envoyé ok")
+
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            console.log(email, password)
+
+            login(email, password);
+        });
+            
+        ///// Connexion User /////
+async function login(email, password) {
+    try {
+            const response = await fetch ("http://localhost:5678/api/users/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({email, password})
+        });
+            if (!response.ok) {
+                throw new Error("Erreur lors de la connexion");
+            }
+            const user = await response.json();
+                console.log("Réponse API :", user);
+            document.location.href = "index.html";
+    } catch (error) {
+            console.error("Erreur :", error.message);
+    }
+}
+            
+
+
+            
+            
+            
+
+
+
+           
+
+    

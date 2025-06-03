@@ -20,14 +20,21 @@
                 <h2>Log In</h2>
                     <form action"#" method="POST" id="form-login">
                         <div>
-                            <label for="email">E-mail</label>
-                            <input type="email" id="email" name="email" required>
-                            <label for="password">Mot de passe</label>
-                            <input type="password" id="password" name="password" required>
+                            <div>
+                                <label for="email" class="label-co">E-mail</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div>
+                                <label for="password" class="label-co">Mot de passe</label>
+                                <input type="password" id="password" name="password" required>
+                            </div>
                         </div>
-                        <div>
-                        <input type="submit" value="Se connecter"/>
-                        </div>
+                            <div>
+                                <input type="submit" value="Se connecter"/>
+                            </div>
+                            <div class="password">
+                                <a href="#">Mot de passe oublié</a>
+                            </div>
                     </form>`;
 
         logins.appendChild(loginForm);

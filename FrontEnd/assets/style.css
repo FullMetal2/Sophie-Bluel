@@ -260,3 +260,10 @@ footer nav ul {
 .visible-form input[type="submit"] {
 	width: 179px;
 }
+.label-co {
+	display: block;;
+}
+.password {
+	display: flex;
+	justify-content: center;
+}

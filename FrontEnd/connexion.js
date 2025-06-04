@@ -42,51 +42,56 @@
             
         ///// Récupération des data user /////
 
-        const emailInput = document.querySelector("#email")
-        const passwordInput = document.querySelector("#password")
-        const formlogin = document.querySelector("#form-login")
-        const errorEmail = document.querySelector(".error")
+        
+        const formlogin = document.querySelector("#form-login");
+        const errorEmail = document.querySelector(".error");
         
         // écouteur d'évenement sur l'input se connecter //
 
             formlogin.addEventListener("submit", (event) => {
                 event.preventDefault();
-                console.log("Formulaire non envoyé ok");
+                console.log("Formulaire par défautl non envoyé ok");
+                const formData = new FormData(formlogin);
+                formData.forEach((value, key) => {
+                console.log(key ,value);
+                
+            })
+            login(formData);
 
-            const email = emailInput.value;
-            const password = passwordInput.value;
-            console.log(email, password);
-
-            login(email, password);
-            
         });
         
             
+        
+         
+        
+            
         ///// Connexion User /////
-async function login(email, password) {
-    try {
-            const response = await fetch ("http://localhost:5678/api/users/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({email, password})
-        });
+function login(formData) {
 
-            if (!response.ok) {
-                throw new Error("Erreur lors de la connexion");
-            }
-            const user = await response.json();
-                document.location.href = "index.html";
-                    console.log("Réponse connexion API :", user);
-                        window.localStorage.setItem("Stoké user", JSON.stringify(user));
+             fetch ("http://localhost:5678/api/users/login", {
+                method: "POST",
+                body: formData,
+        })
+            .then(response => {
+                if (!response.ok) {
+                    
+                    return response.text().then(text => {throw new Error(text);});
+                }
+                 return response.json();
+        })
+            .then (data => {
+                    document.location.href = "index.html";
+                    console.log("Réponse connexion API :", data);
+                        window.localStorage.setItem("Stoké user", JSON.stringify(data));
                         const storeUser = window.localStorage.getItem("Stoké user");
                         console.log("Données stokées dans le localstorage :", JSON.parse(storeUser));
-            } catch (error) {
-                    errorEmail.innerText = "E-mail ou mot de passe incorrecte";
+            })
+            .catch(error =>  {
+                    errorEmail.innerText = "E-mail ou mot de passe incorrect";
                     console.error("Erreur :", error.message);
-            };
-}
+            });
+        }
+
 
             
 

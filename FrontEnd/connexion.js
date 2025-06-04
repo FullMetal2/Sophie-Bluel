@@ -85,6 +85,11 @@ function login(dataObject) {
                         window.localStorage.setItem("Stoké user", JSON.stringify(data));
                         const storeUser = window.localStorage.getItem("Stoké user");
                         console.log("Données stokées dans le localstorage :", JSON.parse(storeUser));
+                            if (storeUser === "admin") {
+                                console.log("Bienvenue administrateur");
+                            } else {
+                                console.log("Bienvenue utilisateur");
+                            }
             })
             .catch(error =>  {
                     errorEmail.innerText = "E-mail ou mot de passe incorrect";

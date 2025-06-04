@@ -19,7 +19,7 @@ genereWorks(works);
         
         //Création des boutons filtres ( balises du DOM ) //
         
-        btnTous = document.createElement("button")
+        const btnTous = document.createElement("button")
         btnTous.textContent = "Tous";
         btnTous.addEventListener("click", function() {
             console.log("Afiicher tous les travaux");
@@ -30,7 +30,7 @@ genereWorks(works);
         //const btnFiltre = document.querySelector(".btn-filtre")
         
 
-        btnObjet = document.createElement("button");
+        const btnObjet = document.createElement("button");
         btnObjet.textContent = "Objets";
         btnObjet.addEventListener("click", function() {
             const categoryId = 1;
@@ -43,8 +43,8 @@ genereWorks(works);
 
         //const btnFiltre = document.querySelector(".btn-filtre")
         
-
-        btnAppart = document.createElement("button");
+        
+        const btnAppart = document.createElement("button");
         btnAppart.textContent = "Appartements";
         btnAppart.addEventListener("click", function() {
             const categoryId = 2;
@@ -59,7 +59,7 @@ genereWorks(works);
         //const btnFiltre = document.querySelector(".btn-filtre")
         
 
-        btnHotel = document.createElement("button");
+        const btnHotel = document.createElement("button");
         btnHotel.textContent = "Hôtels & Restaurants";
         btnHotel.addEventListener("click", function() {
             const categoryId = 3;

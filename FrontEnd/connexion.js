@@ -51,33 +51,34 @@
             formlogin.addEventListener("submit", (event) => {
                 event.preventDefault();
                 console.log("Formulaire par défautl non envoyé ok");
-                const formData = new FormData(formlogin);
-                formData.forEach((value, key) => {
-                console.log(key ,value);
                 
-            })
-            login(formData);
+                const formData = new FormData(formlogin);
+                const dataObject = {};
+                formData.forEach((value, key) => {
+                    dataObject[key] = value;
+                    console.log(key ,value);
+                });
 
+            login(dataObject);
         });
         
             
-        
-         
-        
-            
         ///// Connexion User /////
-function login(formData) {
+function login(dataObject) {
 
-             fetch ("http://localhost:5678/api/users/login", {
+            fetch("http://localhost:5678/api/users/login", {
                 method: "POST",
-                body: formData,
-        })
+                headers: {
+                    "content-type": "application/json"
+                },
+                body: JSON.stringify(dataObject)
+            })
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Problème avec la requête");
                }
                  return response.json();
-        })
+            })
             .then (data => {
                     document.location.href = "index.html";
                     console.log("Réponse connexion API :", data);
@@ -89,7 +90,7 @@ function login(formData) {
                     errorEmail.innerText = "E-mail ou mot de passe incorrect";
                     console.error("Erreur :", error.message);
             });
-        }
+}
 
 
             

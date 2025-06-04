@@ -74,9 +74,8 @@ function login(formData) {
         })
             .then(response => {
                 if (!response.ok) {
-                    
-                    return response.text().then(text => {throw new Error(text);});
-                }
+                    throw new Error("Problème avec la requête");
+               }
                  return response.json();
         })
             .then (data => {

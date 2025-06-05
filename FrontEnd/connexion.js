@@ -80,13 +80,19 @@ function login(dataObject) {
                  return response.json();
             })
             .then (data => {
-                    document.location.href = "index.html";
                     console.log("Réponse connexion API :", data);
-                        window.localStorage.setItem("Stoké user", JSON.stringify(data));
-                        const storeUser = window.localStorage.getItem("Stoké user");
+
+                        window.localStorage.setItem("Token", JSON.stringify(data.token));
+
+                        const storeUser = window.localStorage.getItem("Token");
                         console.log("Données stokées dans le localstorage :", JSON.parse(storeUser));
-                            if (storeUser === "admin") {
-                                console.log("Bienvenue administrateur");
+
+                        const userId = data.userId;
+
+                        document.location.href = "index.html";
+
+                            if (userId === 1) {
+                                console.log("Bienvenue administrateur", userId);
                             } else {
                                 console.log("Bienvenue utilisateur");
                             }

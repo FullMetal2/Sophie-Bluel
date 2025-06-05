@@ -1,8 +1,7 @@
             /////  Afficher la page de connexion /////
-
-    const Filtre = document.querySelector(".btn-filtre")
-    const btnLogin = document.querySelector("#login");
-    const body = document.querySelector("body");        
+        
+        const btnLogin = document.querySelector("#login");
+        const body = document.querySelector("body");        
         btnLogin.addEventListener("click", () => {
             const elementMain = document.querySelector('main')
             elementMain.style.display = 'none';
@@ -15,7 +14,7 @@
         })
 
         
-        loginForm = document.querySelector(".logins")
+        const loginForm = document.querySelector(".logins")
             loginForm.innerHTML = `
                 <h2>Log In</h2>
                     <form action"#" method="POST" id="form-login">
@@ -93,6 +92,20 @@ function login(dataObject) {
 
                             if (userId === 1) {
                                 console.log("Bienvenue administrateur", userId);
+                                document.addEventListener("DOMContentLoaded", () => {
+
+                                    if (filtrer) {
+                                            const filtrer = document.querySelector(".btn-filtre");
+                                            filtrer.innerHTML = "";
+                                            console.log("l'élément a été trouvé");
+                                        } else {
+                                            console.log("l'élément .btn-filtre n'a pas été trouvé");
+                                        }
+                                }); 
+                                    //const editMode = document.createElement("span")
+                                    //editMode.textContent = "Mode édition";
+                                    //const header = document.querySelector('header');
+                                    //header.appendChild(editMode);
                             } else {
                                 console.log("Bienvenue utilisateur");
                             }
@@ -102,10 +115,6 @@ function login(dataObject) {
                     console.error("Erreur :", error.message);
             });
 }
-
-
-            
-
 
             
             

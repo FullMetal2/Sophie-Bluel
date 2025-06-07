@@ -7,6 +7,8 @@ async function getWorks() {
             console.log("Transformation de la réponse API en tableau utilisable en JS", works);  // works = tableau de données (Works) //
         
         ///// Apelle à la fonction genereWorks /////
+const isAdmin = window.localStorage.getItem("Token");
+
 
 genereWorks(works);
 

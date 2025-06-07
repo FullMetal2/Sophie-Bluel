@@ -82,39 +82,52 @@ function login(dataObject) {
                     console.log("Réponse connexion API :", data);
 
                         window.localStorage.setItem("Token", JSON.stringify(data.token));
+                        const userId = data.userId;
+                            if (userId === 1) {
+                                window.localStorage.setItem("isAdmin", true);
+                                console.log("Admin :", userId)
+                            } else {
+                                window.localStorage.setItem("isAdmin", false);
+                                console.log(userId)
+                            }
 
                         const storeUser = window.localStorage.getItem("Token");
                         console.log("Données stokées dans le localstorage :", JSON.parse(storeUser));
+                        
+                        document.location.href = "index.html"
+                        document.addEventListener("DOMContentLoaded", function() {
+                            const isAdmin = window.localStorage.getItem("isAdmin") === "true";
 
-                        const userId = data.userId;
-
-                        document.location.href = "index.html";
-
-                            if (userId === 1) {
-                                console.log("Bienvenue administrateur", userId);
-                                document.addEventListener("DOMContentLoaded", () => {
-
-                                    if (filtrer) {
-                                            const filtrer = document.querySelector(".btn-filtre");
-                                            filtrer.innerHTML = "";
-                                            console.log("l'élément a été trouvé");
-                                        } else {
-                                            console.log("l'élément .btn-filtre n'a pas été trouvé");
-                                        }
-                                }); 
-                                    //const editMode = document.createElement("span")
-                                    //editMode.textContent = "Mode édition";
-                                    //const header = document.querySelector('header');
-                                    //header.appendChild(editMode);
+                            if (isAdmin) {
+                                console.log("Bienvenue admin sur index.html");
+                                const filter = document.querySelector(".btn-filtre");
+                                if (filter) {
+                                    filter.innerHTML = "";
+                                }
                             } else {
-                                console.log("Bienvenue utilisateur");
+                                console.log("Bienvenue utilisateur sur index.html");
                             }
+                        });
+                        
+                        
+
+
+                             
+                           
+
+                                    
+                            
             })
             .catch(error =>  {
                     errorEmail.innerText = "E-mail ou mot de passe incorrect";
                     console.error("Erreur :", error.message);
             });
-}
+        }
+
+                            
+                              
+
+                            
 
             
             

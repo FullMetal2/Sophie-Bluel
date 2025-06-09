@@ -81,20 +81,20 @@ function login(dataObject) {
             .then (data => {
                     console.log("Réponse connexion API :", data);
 
-                        window.sessionStorage.setItem("Token", JSON.stringify(data.token));
+                        window.localStorage.setItem("Token", JSON.stringify(data.token));
                         const userId = data.userId;
                             if (userId === 1) {
-                                window.sessionStorage.setItem("isAdmin", true);
+                                window.localStorage.setItem("isAdmin", true);
                                 console.log("Admin :", userId);
                             } else {
-                                window.sessionStorage.setItem("isAdmin", false);
+                                window.localStorage.setItem("isAdmin", false);
                                 console.log(userId);
                             };
 
-                        const storeUser = window.sessionStorage.getItem("Token");
+                        const storeUser = window.localStorage.getItem("Token");
                         console.log("Données stokées dans le sessionStorage :", JSON.parse(storeUser));
                         
-                        window.location.replace("index.html");
+                        window.location.href = "index.html";
 ;
 
             })

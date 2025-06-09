@@ -1,5 +1,5 @@
-       const isAdmin = window.sessionStorage.getItem("isAdmin") === "true";
-       const token = window.sessionStorage.getItem("Token");
+        const isAdmin = window.localStorage.getItem("isAdmin") === "true";
+        const token = window.localStorage.getItem("Token");
 
        ///// Récupération des travaux depuis l'API /////
 async function getWorks() {
@@ -83,16 +83,14 @@ genereWorks(works);
     }
 
  
-
+}
     
-}   
+//}   
 
         // Apelle à la fonction getWorks //
 
         getWorks();
         document.addEventListener("DOMContentLoaded", function() {
-                sessionStorage.removeItem("isAdmin");
-                console.log("SessionStorage vidé au chargement.");
                     console.log("Token", token);
                     console.log("Admin :", isAdmin)
                         if (isAdmin) {

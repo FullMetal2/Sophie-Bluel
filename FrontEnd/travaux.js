@@ -17,7 +17,7 @@ genereWorks(works);
         /// Filtrage par catégories ///    
     if (!isAdmin) {
         
-       let worksCategory = trierCategory(works);
+       const worksCategory = trierCategory(works);
         
         
         //Création des boutons filtres ( balises du DOM ) //
@@ -96,8 +96,15 @@ genereWorks(works);
                         if (isAdmin) {
                         console.log("Bienvenue admin :", isAdmin);
                             const filter = document.querySelector(".btn-filtre");
+                            const editionModeBar = document.querySelector("body");
+                            const blackHighBar = document.createElement("div")
+                            editionModeBar.appendChild(blackHighBar)
+                            const header = document.querySelector("header")
+
                         if (filter) {
                             filter.innerHTML = "";
+                            blackHighBar.innerHTML = `<div class="high-bar">Mode édition</div>`
+                            header.style.marginTop = "100px"
                         }
                         } else {
                             console.log("Bienvenue utilisateur :");

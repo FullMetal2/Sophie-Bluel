@@ -1,6 +1,6 @@
             /////  Afficher la page de connexion /////
         
-        const btnLogin = document.querySelector("#login");
+        const btnLogin = document.querySelector(".login");
         const body = document.querySelector("body");        
         btnLogin.addEventListener("click", () => {
             const elementMain = document.querySelector('main')

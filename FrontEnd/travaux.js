@@ -82,11 +82,11 @@ genereWorks(works);
         btnFiltre.appendChild(btnHotel);
     }
 
+        
+
+
  
 }
-    
-//}   
-
         // Apelle à la fonction getWorks //
 
         getWorks();
@@ -100,11 +100,31 @@ genereWorks(works);
                             const blackHighBar = document.createElement("div")
                             editionModeBar.appendChild(blackHighBar)
                             const header = document.querySelector("header")
+                            const btnEditMode = document.createElement("div");
+                            btnEditMode.innerHTML = `<div class="icone"><i class="fa-regular fa-pen-to-square"></i>Modifier</div>`;
+                            btnEditMode.classList.add("divEdit")
+                            const modifEditMode = document.querySelector("#portfolio h2");
+                            modifEditMode.appendChild(btnEditMode);
+                            const logIn = document.querySelector(".login")
+                            logIn.style.display = 'none'
+                            const logOut = document.querySelector(".logout")
+                            logOut.style.display = 'block'
+                            logOut.textContent = "Logout"
+                                logOut.addEventListener("click", function ()  {
+                                    window.localStorage.clear();
+                                    document.location.href = "index.html"
+                                })
+
+                            
 
                         if (filter) {
                             filter.innerHTML = "";
-                            blackHighBar.innerHTML = `<div class="high-bar">Mode édition</div>`
+                            blackHighBar.innerHTML = `<div class="high-bar">
+                                                         <sapn class="iconHeader"><i class="fa-solid fa-pen-to-square"></i></sapn>
+                                                         <div>Mode édition</div>  
+                                                    </div>`
                             header.style.marginTop = "100px"
+                            
                         }
                         } else {
                             console.log("Bienvenue utilisateur :");

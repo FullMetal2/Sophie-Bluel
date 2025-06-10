@@ -228,6 +228,9 @@ footer nav ul {
 .logins {
 	display: none;
 }
+.logout {
+	display: none;
+}
 .visible-form {
 	display: flex;
 	flex-direction: column;
@@ -283,3 +286,21 @@ footer nav ul {
 	background-color: black;
 	color: #FFf;
 }
+.iconHeader {
+	padding-right: 10px;
+}
+.divEdit {
+	display: inline;
+	color: black;
+	padding-left: 50px;
+	font-family: Work sans;
+	font-size: 14px;
+	font-weight: 400;
+}
+.icone {
+	display: inline;
+}
+.fa-regular.fa-pen-to-square {
+	padding-right: 10px;
+}
+

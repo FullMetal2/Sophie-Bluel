@@ -1,6 +1,6 @@
         const isAdmin = window.localStorage.getItem("isAdmin") === "true";
         const token = window.localStorage.getItem("Token");
-
+        
        ///// Récupération des travaux depuis l'API /////
 async function getWorks() {
 
@@ -8,7 +8,7 @@ async function getWorks() {
             console.log("Réponse brute de l'API :", response);
         const works = await response.json();
             console.log("Transformation de la réponse API en tableau utilisable en JS", works);  // works = tableau de données (Works) //
-        
+        data = works;
             ///// Apelle à la fonction genereWorks /////
 
 genereWorks(works);
@@ -88,49 +88,93 @@ genereWorks(works);
  
 }
         // Apelle à la fonction getWorks //
-
-        getWorks();
+getWorks()
+        
+        
         document.addEventListener("DOMContentLoaded", function() {
+                    
                     console.log("Token", token);
-                    console.log("Admin :", isAdmin)
+                    console.log("Admin :", isAdmin);
+
                         if (isAdmin) {
-                        console.log("Bienvenue admin :", isAdmin);
-                            const filter = document.querySelector(".btn-filtre");
-                            const editionModeBar = document.querySelector("body");
-                            const blackHighBar = document.createElement("div")
-                            editionModeBar.appendChild(blackHighBar)
-                            const header = document.querySelector("header")
-                            const btnEditMode = document.createElement("div");
-                            btnEditMode.innerHTML = `<div class="icone"><i class="fa-regular fa-pen-to-square"></i>Modifier</div>`;
-                            btnEditMode.classList.add("divEdit")
-                            const modifEditMode = document.querySelector("#portfolio h2");
-                            modifEditMode.appendChild(btnEditMode);
-                            const logIn = document.querySelector(".login")
-                            logIn.style.display = 'none'
-                            const logOut = document.querySelector(".logout")
-                            logOut.style.display = 'block'
-                            logOut.textContent = "Logout"
-                                logOut.addEventListener("click", function ()  {
-                                    window.localStorage.clear();
-                                    document.location.href = "index.html"
-                                })
+                            console.log("Bienvenue admin :", isAdmin);
 
+                                const filter = document.querySelector(".btn-filtre");
+                                const editionModeBar = document.querySelector("body");
+                                const blackHighBar = document.createElement("div");
+                                editionModeBar.appendChild(blackHighBar);
+
+                                const header = document.querySelector("header");
+                                const btnEditMode = document.createElement("div");
+                                btnEditMode.innerHTML = `<button class="icone"><i class="fa-regular fa-pen-to-square"></i>Modifier</button>`;
+                                btnEditMode.classList.add("divEdit");
+                                const modifEditMode = document.querySelector("#portfolio h2");
+                                modifEditMode.appendChild(btnEditMode);
+
+                                const logIn = document.querySelector(".login");
+                                logIn.style.display = 'none';
+                                const logOut = document.querySelector(".logout");
+                                logOut.style.display = 'block';
+                                logOut.textContent = "Logout";
+                                    logOut.addEventListener("click", function ()  {
+                                        window.localStorage.clear();
+                                        document.location.href = "index.html"
+                                    });
+
+                            if (filter) {
+                                filter.innerHTML = "";
+                                blackHighBar.innerHTML = `<div class="high-bar">
+                                                            <sapn class="iconHeader"><i class="fa-solid fa-pen-to-square"></i></sapn>
+                                                            <div>Mode édition</div>  
+                                                        </div>`
+                                header.style.marginTop = "100px"
+                                
+                            }
+
+            btnEditMode.addEventListener("click", function (event) {
+                event.preventDefault();
+                    
+                   const overlay = document.createElement("div");
+                    overlay.classList.add("overlay");
+
+                    const modal1 = document.createElement("aside");
+                    modal1.classList.add("styleModale");
+                        modal1.innerHTML = `<h2>Galerie photo</h2>
+                                                <button class="btnClose"><i class="fa-solid fa-xmark"></i></button>`;
+                        const modalGallery = document.createElement("div")
+                        modalGallery.classList.add("modal-gallery")
+                        modal1.appendChild(modalGallery)
+                        
+                            document.body.appendChild(overlay);
+                            document.body.appendChild(modal1);
                             
 
-                        if (filter) {
-                            filter.innerHTML = "";
-                            blackHighBar.innerHTML = `<div class="high-bar">
-                                                         <sapn class="iconHeader"><i class="fa-solid fa-pen-to-square"></i></sapn>
-                                                         <div>Mode édition</div>  
-                                                    </div>`
-                            header.style.marginTop = "100px"
-                            
-                        }
+                     document.body.classList.add("no-scroll");
+
+                    
+
+                    function closeModal () {
+                        overlay.remove();
+                        modal1.remove();
+                        document.body.classList.remove("no-scroll");
+
+                    }
+
+                    
+
+                    overlay.addEventListener("click", closeModal);
+                        modal1.querySelector(".btnClose").addEventListener("click", closeModal);
+                        
+                    });
+                    
+                    
                         } else {
                             console.log("Bienvenue utilisateur :");
                         }
             
-        });    
+        }); 
+        
+        
     
                     
         ///// Fonction pour trier par categorie /////
@@ -188,6 +232,7 @@ function genereWorks(works){
         divGallery.appendChild(worksElement);
         worksElement.appendChild(worksImg);
         worksElement.appendChild(worksTitle);
+        
     }
 }
 

@@ -310,6 +310,9 @@ footer nav ul {
 	position: fixed;
 	top: 30%;
 	left: 30%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	background-color: #fff;
 	width: 630px;
 	height: 400px;
@@ -346,5 +349,11 @@ footer nav ul {
 	border: none;
 	background-color: inherit;
 	color: black;
+}
+.titleModale {
+	font-family: Work sans;
+	font-weight: 400;
+	color: black;
+	font-size: 26px;
 }
 

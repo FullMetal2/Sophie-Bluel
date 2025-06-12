@@ -139,7 +139,7 @@ getWorks()
 
                     const modal1 = document.createElement("aside");
                     modal1.classList.add("styleModale");
-                        modal1.innerHTML = `<h2>Galerie photo</h2>
+                        modal1.innerHTML = `<h2 class="titleModale">Galerie photo</h2>
                                                 <button class="btnClose"><i class="fa-solid fa-xmark"></i></button>`;
                         const modalGallery = document.createElement("div")
                         modalGallery.classList.add("modal-gallery")

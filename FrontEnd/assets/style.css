@@ -95,6 +95,7 @@ nav ul {
 nav li {
 	padding: 0 10px;
 	font-size: 1.2em;
+	cursor: pointer;
 }
 .login {
 	list-style: none;
@@ -148,6 +149,7 @@ button {
 	white-space: nowrap;
 	font-family: 'syne' ;
 	font-weight: 700;
+	cursor: pointer;
 }
 button:hover {
 	background-color: #1D6154;
@@ -223,6 +225,9 @@ footer nav ul {
 	justify-content: flex-end;
 	align-items: center;
 	margin: 2em
+}
+.login {
+	cursor: pointer;
 }
 
 /***Page de login***/
@@ -360,13 +365,14 @@ footer nav ul {
 	font-weight: 400;
 	color: black;
 	font-size: 26px;
+	margin-top: 20px;
 }
 .btnphoto {
 	background-color: #1D6154;
 	color: #fff;
 	width: 237px;
 	height: 36px;
-	margin-top: 50px;
+	margin-top: 150px;
 	cursor: pointer;
 }
 .modal-gallery {
@@ -381,9 +387,10 @@ footer nav ul {
 	width: 76px;
 	height: 100px;
 }
-hr {
+/*hr {
 	color: #B3B3B3;
-}
+	width: 420px;
+}*/
 figure i.fa-trash-can {
 	display: flex;
 	align-items: center;

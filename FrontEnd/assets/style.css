@@ -308,14 +308,15 @@ footer nav ul {
 }
 .styleModale {
 	position: fixed;
-	top: 30%;
-	left: 30%;
+	top: 50%;
+	left: 50%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	flex-direction: column;
 	background-color: #fff;
 	width: 630px;
-	height: 400px;
+	height: 688px;
 	max-width: 100%;
 	max-width: 100%;
 	border-radius: 10px;
@@ -355,5 +356,23 @@ footer nav ul {
 	font-weight: 400;
 	color: black;
 	font-size: 26px;
+}
+.btnphoto {
+	background-color: #1D6154;
+	color: #fff;
+	width: 237px;
+	height: 36px;
+}
+.modal-gallery {
+	display: grid;
+	grid-template-columns: repeat(5, 2fr);
+
+}
+.modal-gallery figure {
+	padding: 5px;
+}
+.modal-gallery img {
+	width: 76px;
+	height: 100px;
 }
 

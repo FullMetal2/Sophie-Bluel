@@ -1,24 +1,31 @@
         const isAdmin = window.localStorage.getItem("isAdmin") === "true";
         const token = window.localStorage.getItem("Token");
-        
+        let data = [];
        ///// Récupération des travaux depuis l'API /////
 async function getWorks() {
-
+    try {
         const response = await fetch("http://localhost:5678/api/works"); // Serveur API //
             console.log("Réponse brute de l'API :", response);
         const works = await response.json();
+        data = works
             console.log("Transformation de la réponse API en tableau utilisable en JS", works);  // works = tableau de données (Works) //
-        data = works;
+        return works;
+        
+    } catch (error) {
+        console.error("Erreur lors de la récupération des travaux :", (error));
+        return [];
+    } 
+     
+}  
             ///// Apelle à la fonction genereWorks /////
-
-genereWorks(works);
         
 
-        /// Filtrage par catégories ///    
-    if (!isAdmin) {
+        /// Filtrage par catégories ///   
         
-       const worksCategory = trierCategory(works);
-        
+
+
+      
+function genereFiltre(worksCategory, data){
         
         //Création des boutons filtres ( balises du DOM ) //
         
@@ -27,7 +34,7 @@ genereWorks(works);
         btnTous.addEventListener("click", function() {
             console.log("Afiicher tous les travaux");
             document.querySelector(".gallery").innerHTML = "";
-            genereWorks(works);
+            genereWorks(data, ".gallery");
         });
 
         
@@ -82,19 +89,28 @@ genereWorks(works);
         btnFiltre.appendChild(btnHotel);
     }
 
+
         
 
 
  
-}
+
         // Apelle à la fonction getWorks //
-getWorks()
+
         
         
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", async function() {
                     
                     console.log("Token", token);
                     console.log("Admin :", isAdmin);
+
+                    data = await getWorks();
+                    genereWorks(data);
+
+                        if (!isAdmin) {
+                            const worksCategory = trierCategory(data);
+                            genereFiltre(worksCategory, data);
+                        }
 
                         if (isAdmin) {
                             console.log("Bienvenue admin :", isAdmin);
@@ -140,15 +156,21 @@ getWorks()
                     const modal1 = document.createElement("aside");
                     modal1.classList.add("styleModale");
                         modal1.innerHTML = `<h2 class="titleModale">Galerie photo</h2>
-                                                <button class="btnClose"><i class="fa-solid fa-xmark"></i></button>`;
-                        const modalGallery = document.createElement("div")
-                        modalGallery.classList.add("modal-gallery")
-                        modal1.appendChild(modalGallery)
+                                                <button class="btnClose">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                </button>
+                                                <div class="modal-gallery"></div>
+                                                <button class="btnphoto">
+                                                    Ajouter une photo
+                                                </button>`;
+                        
+                        console.log(data, document.querySelector("modal-gallery"))
+                        
                         
                             document.body.appendChild(overlay);
                             document.body.appendChild(modal1);
                             
-
+                        genereWorksGallery(data)
                      document.body.classList.add("no-scroll");
 
                     
@@ -164,37 +186,38 @@ getWorks()
 
                     overlay.addEventListener("click", closeModal);
                         modal1.querySelector(".btnClose").addEventListener("click", closeModal);
-                        
+                        genereWorks(data, ".modal-gallery")
                     });
                     
                     
                         } else {
                             console.log("Bienvenue utilisateur :");
                         }
+                        
             
-        }); 
+        })
         
         
     
                     
         ///// Fonction pour trier par categorie /////
    
-function trierCategory(works){
+function trierCategory(data){
         const worksCategory = {};
 
             // Boucle for qui parcours le tableau works //
 
-            for (let i = 0; i < works.length; i++) {
-                const categoryId = works[i].category.id;
+            for (let i = 0; i < data.length; i++) {
+                const categoryId = data[i].category.id;
                 
                     if (!worksCategory[categoryId]) {
                         worksCategory[categoryId] = {
-                            id: works[i].category.id,
-                            name: works[i].category.name,
+                            id: data[i].category.id,
+                            name: data[i].category.name,
                             item: []
                         };
                     };
-                worksCategory[categoryId].item.push(works[i]);
+                worksCategory[categoryId].item.push(data[i]);
                 
                 
             };
@@ -205,21 +228,27 @@ function trierCategory(works){
  
            ///// Fonction pour afficher les travaux (works) /////
 
-function genereWorks(works){
+function genereWorks(data){
+    const mainGallery = document.querySelector(".gallery");
+    
 
+    mainGallery.innerHTML = "";
+   //modalGallery.innerHTML = "";
+        
             // Boucle for qui parcours le tableau works //
-    for (let i = 0; i < works.length; i++) {
+    for (let i = 0; i < data.length; i++) {
 
             // Création des balises HTML //
 
-        const figure = works[i];
+        const figure = data[i];
 
             // Rattachement au balise du DOM //
 
-        const divGallery = document.querySelector(".gallery");
+        //const divGallery = document.querySelector(".gallery");
+        
 
         const worksElement = document.createElement("figure");
-        worksElement.id = works[i].id;
+        worksElement.id = data[i].id;
 
         const worksImg = document.createElement("img");
         worksImg.src = figure.imageUrl;
@@ -227,11 +256,34 @@ function genereWorks(works){
         const worksTitle = document.createElement("figcaption");
         worksTitle.innerText = figure.title;
 
-            // Rattachement à la section du DOM //
+        // Rattachement à la section du DOM //
 
-        divGallery.appendChild(worksElement);
+        mainGallery.appendChild(worksElement);
         worksElement.appendChild(worksImg);
         worksElement.appendChild(worksTitle);
+    }
+}
+function genereWorksGallery(data){
+    const modalGallery = document.querySelector(".modal-gallery");
+     for (let i = 0; i < data.length; i++) {
+
+            // Création des balises HTML //
+
+        const figure = data[i];
+
+        
+        const worksElementModal = document.createElement("figure");
+        worksElementModal.id = figure.id;
+
+        const worksImgModal = document.createElement("img");
+        worksImgModal.src = figure.imageUrl;
+
+
+
+        worksElementModal.appendChild(worksImgModal);
+        modalGallery.appendChild(worksElementModal);
+
+
         
     }
 }
@@ -241,8 +293,5 @@ function genereWorks(works){
 
 
 
-
-
-
-            
+        
 

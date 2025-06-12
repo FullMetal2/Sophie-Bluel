@@ -132,6 +132,7 @@ function genereFiltre(worksCategory, data){
                                 const logOut = document.querySelector(".logout");
                                 logOut.style.display = 'block';
                                 logOut.textContent = "Logout";
+                                logOut.style.cursor = "pointer"
                                     logOut.addEventListener("click", function ()  {
                                         window.localStorage.clear();
                                         document.location.href = "index.html"
@@ -160,11 +161,12 @@ function genereFiltre(worksCategory, data){
                                                     <i class="fa-solid fa-xmark"></i>
                                                 </button>
                                                 <div class="modal-gallery"></div>
+                                                <hr>
                                                 <button class="btnphoto">
                                                     Ajouter une photo
                                                 </button>`;
                         
-                        console.log(data, document.querySelector("modal-gallery"))
+                        
                         
                         
                             document.body.appendChild(overlay);
@@ -265,6 +267,7 @@ function genereWorks(data){
 }
 function genereWorksGallery(data){
     const modalGallery = document.querySelector(".modal-gallery");
+    
      for (let i = 0; i < data.length; i++) {
 
             // Création des balises HTML //
@@ -274,13 +277,22 @@ function genereWorksGallery(data){
         
         const worksElementModal = document.createElement("figure");
         worksElementModal.id = figure.id;
+        worksElementModal.style.position = "relative";
 
         const worksImgModal = document.createElement("img");
         worksImgModal.src = figure.imageUrl;
 
+        const deleteIcon = document.createElement("i");
+        deleteIcon.classList.add("fa-solid", "fa-trash-can");
 
 
+        
+
+
+
+       
         worksElementModal.appendChild(worksImgModal);
+         worksElementModal.appendChild(deleteIcon);
         modalGallery.appendChild(worksElementModal);
 
 

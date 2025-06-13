@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                                         
                                                                                     <div class="modal-form-view">
                                                                                         <h2 class="titleModale">Ajout photo</h2>
-                                                                                          <button class="btnClose">
+                                                                                          <button class="btnCloseForm">
                                                                                             <i class="fa-solid fa-xmark"></i>
                                                                                         </button>
                                                                                         <button class="btnretour"><i class="fa-solid fa-arrow-left"></i></button>
@@ -168,6 +168,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
                                                             overlay.addEventListener("click", closeModal);
                                                                 modal1.querySelector(".btnClose").addEventListener("click", closeModal);
+                                                                modal1.querySelector(".btnCloseForm").addEventListener("click", closeModal);
                                                                 genereWorks(data, ".modal-gallery");
                                                     });
                                                             

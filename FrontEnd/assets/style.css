@@ -367,6 +367,16 @@ footer nav ul {
 	background-color: inherit;
 	color: black;
 }
+.btnCloseForm {
+	all: unset;
+	border: none;
+	color: black;
+}
+.btnCloseForm:hover {
+	border: none;
+	background-color: inherit;
+	color: black;
+}
 .titleModale {
 	font-family: Work sans;
 	font-weight: 400;

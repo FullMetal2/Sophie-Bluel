@@ -17,8 +17,7 @@ async function getWorks() {
         console.error("Erreur lors de la récupération des travaux :", (error));
         return [];
     } 
-};
-        
+};   
           
 document.addEventListener("DOMContentLoaded", async function() {
                     
@@ -101,25 +100,32 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                                         </button>
                                                                                         <button class="btnretour"><i class="fa-solid fa-arrow-left"></i></button>
                                                                                             <form id="addphoto">
-                                                                                                <label class="upload-label">
-                                                                                                    <i class="fas fa-image fa-3x"></i>
+                                                                                                <div class="upload">
+                                                                                                <label for="image" class="upload-label">
+                                                                                                    <i class="fa-regular fa-image fa-3x"></i>
                                                                                                     <span class="upload-button">+ Ajouter photo</span>
                                                                                                     <p class="upload-info">jpg, png : 4mo max</p>
-                                                                                                    <input type="file" name="image" accept="image/png, image/jpeg" required hidden>
+                                                                                                    
                                                                                                 </label>
+                                                                                                <input type="file" id="image" name="image" accept="image/png, image/jpeg" required class="file">
+                                                                                                </div>
+                                                                                                <div class="title">
                                                                                                 <label>
                                                                                                     Titre<br>
-                                                                                                        <input type="text" name="titre" required/>
                                                                                                 </label>
+                                                                                                <input type="text" name="titre" required/>
+                                                                                                </div>
+                                                                                                <div class="categorie">
                                                                                                 <label>
                                                                                                     Catégorie<br>
-                                                                                                        <select name="categorie" required>
-                                                                                                            <option value="1">Objet</option>
-                                                                                                            <option value="2">Appartement</option>
-                                                                                                            <option value="3">Hôtel & restaurant</option>
-                                                                                                        </select>
                                                                                                 </label>
-                                                                                                <button type="submit">Valider</button>
+                                                                                                    <select name="categorie" id="categorie-select" required>
+                                                                                                        <option value="" disabled selected hidden></option>
+                                                                                                    </select>
+                                                                                                    <i class="fa-solid fa-angle-down"></i>
+                                                                                                    </div>
+                                                                                                    <hr>   
+                                                                                                <button type="submit" class="btn-valider">Valider</button>
                                                                                             </form>
                                                                                     </div>`;
                                                                 
@@ -128,6 +134,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                     
                                                             genereWorksGallery(data);
                                                             document.body.classList.add("no-scroll");
+
+                                                            remplirSelectCategorie(data);
 
                                                             const btnAjoutphoto = modal1.querySelector(".btnphoto");
                                                             const galleryView = modal1.querySelector(".modal-gallery-view");
@@ -142,6 +150,13 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                             btnRetour.addEventListener("click", () => {
                                                                 galleryView.style.display = "flex";
                                                                 formView.style.display = "none";
+                                                            });
+
+                                                            document.getElementById("addphoto").addEventListener("submit", function(event) {
+                                                                if (!this.checkValidity()) {
+                                                                    event.preventDefault();
+                                                                        return;
+                                                                }
                                                             })
 
                                                             function closeModal () {
@@ -304,6 +319,41 @@ function genereWorksGallery(data){
         worksElementModal.appendChild(deleteIcon);
         modalGallery.appendChild(worksElementModal);
     };
+};
+
+function remplirSelectCategorie(data) {
+
+    const selectElement = document.getElementById("categorie-select");
+
+    //const optionVide = document.createElement("otpion")
+        //optionVide.value = "";
+        //optionVide.textContent = "Catégories";
+        //optionVide.disabled = true;
+        //optionVide.selected = true;
+        //optionVide.hidden = true;
+            //selectElement.appendChild(optionVide);
+
+            let compteur = 0
+
+        for (let i = 0; i < data.length; i++) { 
+            
+            const categorie =  data[i].category;
+
+            if (categorie.id === 1 || categorie.id === 2 || categorie.id === 3) {
+
+                const option = document.createElement("option");
+                option.value = categorie.id;
+                option.textContent = categorie.name;
+                    selectElement.appendChild(option);
+                    console.log(categorie)
+                        compteur++;
+                
+
+                            if (compteur === 3) {
+                                break;
+                            };
+            };
+        };
 };
       
 

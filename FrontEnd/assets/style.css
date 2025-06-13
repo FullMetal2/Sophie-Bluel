@@ -331,6 +331,11 @@ footer nav ul {
 	padding: 20px;
 	z-index: 2;
 }
+.modal-gallery-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .overlay {
   position: fixed;
   top: 0;
@@ -349,7 +354,7 @@ footer nav ul {
 	right: 30px;
 	width: 24px;
 	height: 24px;
-	cursor: pointer;;
+	cursor: pointer;
 }
 .btnClose {
 	border: none;
@@ -414,3 +419,74 @@ figure i.fa-trash-can {
     border-radius: 3px; 
     padding: 2px;
 }
+.modal-form-view {
+	display: none;
+	flex-direction: column;
+	justify-content: center;
+}
+.btnretour {
+	border: none;
+	color: black;
+}
+.btnretour:hover {
+	border: none;
+	background-color: inherit;
+	color: black;
+}
+.fa-solid.fa-arrow-left {
+	position: absolute;
+	top: 30px;
+	left: 30px;
+	width: 24px;
+	height: 24px;
+	cursor: pointer;
+}
+#addphoto {
+	text-align: left;
+	margin-top:30px;
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+}
+#addphoto label {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+.fas.fa-image.fa-3x {
+  display: flex;
+  justify-content: center;
+}
+.upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #E8F1F6;
+  border-radius: 5px;
+  padding: 15px;
+  cursor: pointer;
+  height: 169px;
+}
+
+.upload-preview-icon {
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.upload-button {
+  background-color: #cbd6dc;
+  padding: 10px 20px;
+  border-radius: 25px;
+  color: #306685;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.upload-info {
+  font-size: 0.8rem;
+  color: #444;
+}
+

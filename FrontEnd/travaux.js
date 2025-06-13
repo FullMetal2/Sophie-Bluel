@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
                 const worksCategory = trierCategory(data);
                 genereFiltre(worksCategory, data);
-            }
+            };
 
                 if (isAdmin) {
                     console.log("Bienvenue admin :", isAdmin);
@@ -80,23 +80,69 @@ document.addEventListener("DOMContentLoaded", async function() {
 
                                                             const modal1 = document.createElement("aside");
                                                             modal1.classList.add("styleModale");
-                                                                modal1.innerHTML = `<h2 class="titleModale">Galerie photo</h2>
+                                                                modal1.innerHTML = `<div class="modal-gallery-view">
+                                                                                        <h2 class="titleModale">Galerie photo</h2>
                                                                                         <button class="btnClose">
                                                                                             <i class="fa-solid fa-xmark"></i>
                                                                                         </button>
                                                                                         <div class="modal-gallery"></div>
                                                                                         <div class="btnHr">
-                                                                                        <hr>
-                                                                                        <button class="btnphoto">
-                                                                                            Ajouter une photo
+                                                                                            <hr>
+                                                                                            <button class="btnphoto">
+                                                                                                Ajouter une photo
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                        
+                                                                                    <div class="modal-form-view">
+                                                                                        <h2 class="titleModale">Ajout photo</h2>
+                                                                                          <button class="btnClose">
+                                                                                            <i class="fa-solid fa-xmark"></i>
                                                                                         </button>
-                                                                                        </div>`;
+                                                                                        <button class="btnretour"><i class="fa-solid fa-arrow-left"></i></button>
+                                                                                            <form id="addphoto">
+                                                                                                <label class="upload-label">
+                                                                                                    <i class="fas fa-image fa-3x"></i>
+                                                                                                    <span class="upload-button">+ Ajouter photo</span>
+                                                                                                    <p class="upload-info">jpg, png : 4mo max</p>
+                                                                                                    <input type="file" name="image" accept="image/png, image/jpeg" required hidden>
+                                                                                                </label>
+                                                                                                <label>
+                                                                                                    Titre<br>
+                                                                                                        <input type="text" name="titre" required/>
+                                                                                                </label>
+                                                                                                <label>
+                                                                                                    Catégorie<br>
+                                                                                                        <select name="categorie" required>
+                                                                                                            <option value="1">Objet</option>
+                                                                                                            <option value="2">Appartement</option>
+                                                                                                            <option value="3">Hôtel & restaurant</option>
+                                                                                                        </select>
+                                                                                                </label>
+                                                                                                <button type="submit">Valider</button>
+                                                                                            </form>
+                                                                                    </div>`;
                                                                 
                                                             document.body.appendChild(overlay);
                                                             document.body.appendChild(modal1);
                                                                     
                                                             genereWorksGallery(data);
                                                             document.body.classList.add("no-scroll");
+
+                                                            const btnAjoutphoto = modal1.querySelector(".btnphoto");
+                                                            const galleryView = modal1.querySelector(".modal-gallery-view");
+                                                            const formView = modal1.querySelector(".modal-form-view");
+                                                            const btnRetour = modal1.querySelector(".btnretour");
+
+                                                            btnAjoutphoto.addEventListener("click", () => {
+                                                                galleryView.style.display = "none";
+                                                                formView.style.display = "flex";
+                                                            });
+
+                                                            btnRetour.addEventListener("click", () => {
+                                                                galleryView.style.display = "flex";
+                                                                formView.style.display = "none";
+                                                            })
 
                                                             function closeModal () {
                                                                 overlay.remove();

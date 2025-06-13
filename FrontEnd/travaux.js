@@ -85,10 +85,12 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                                             <i class="fa-solid fa-xmark"></i>
                                                                                         </button>
                                                                                         <div class="modal-gallery"></div>
-                                                                                        
+                                                                                        <div class="btnHr">
+                                                                                        <hr>
                                                                                         <button class="btnphoto">
                                                                                             Ajouter une photo
-                                                                                        </button>`;
+                                                                                        </button>
+                                                                                        </div>`;
                                                                 
                                                             document.body.appendChild(overlay);
                                                             document.body.appendChild(modal1);

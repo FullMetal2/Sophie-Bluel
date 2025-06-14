@@ -135,36 +135,6 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                             genereWorksGallery(data);
                                                             document.body.classList.add("no-scroll");
 
-                                                                 const deleteIcon = document.querySelector(".fa-trash-can");
-        deleteIcon.addEventListener("click", async (event) => {
-            event.preventDefault();
-
-                const dataId = event.target.dataset.id;
-                
-                    await fetch(`http://localhost:5678/api/works/${dataId}`, {
-                        method: "DELETE",
-                        headers: {
-                            "accept": "*/*",
-                            "Authorization": `Bearer ${token}`
-                        },
-                    })
-                    
-                    .then(response => {
-                        if(!response.ok) {
-                            console.error("Erreur :", response.status);
-                            return response.text();
-                        } else {
-                            console.log("Travail supprimé !");
-                           genereWorksGallery(data);
-                            
-                        }
-                    })
-                    .then(text => {
-    console.log("Réponse brute :", text);})
-                    .catch(error => console.error("Erreur réseau :", error));
-});
-
-
                                                             remplirSelectCategorie(data);
 
                                                             const btnAjoutphoto = modal1.querySelector(".btnphoto");
@@ -345,12 +315,40 @@ function genereWorksGallery(data){
         const deleteIcon = document.createElement("i");
         deleteIcon.classList.add("fa-solid", "fa-trash-can");
         deleteIcon.dataset.id = data[i].id;
-        console.log(data[i].id);
+        //console.log(data[i].id);
 
         worksElementModal.appendChild(worksImgModal);
         worksElementModal.appendChild(deleteIcon);
         modalGallery.appendChild(worksElementModal);
     };
+    const deleteIcon = document.querySelector(".fa-trash-can");
+         deleteIcon.addEventListener("click", async (event) => {
+            event.preventDefault();
+
+            const dataId = event.target.dataset.id;
+                                                                            
+                await fetch(`http://localhost:5678/api/works/${dataId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "accept": "*/*",
+                        "Authorization": `Bearer ${token}`
+                    },
+                })
+                                                                                
+                .then(response => {
+                    if(!response.ok) {
+                        console.error("Erreur :", response.status);
+                            return response.text();
+                    } else {
+                        console.log("Travail supprimé !");
+                            genereWorksGallery(data);
+                                                                                        
+                    }
+                })
+                .then(text => {
+                    console.log("Réponse brute :", text);})
+                .catch(error => console.error("Erreur réseau :", error));
+        });
 }
    
 

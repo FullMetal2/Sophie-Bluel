@@ -565,13 +565,17 @@ input {
 	margin-bottom: 25px;
 }
 .btn-valider {
-	background-color: #1D6154;
+	background-color: #A7A7A7;
+	border: none;
 	color: #fff;
 	width: 237px;
 	height: 36px;
 	margin-top: 30px;
 	margin-bottom: 0;
 	cursor: pointer;
+}
+.btn-valider:hover {
+	background-color: #A7A7A7;
 }
 
 /*

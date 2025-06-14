@@ -113,13 +113,13 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                                                 <label>
                                                                                                     Titre<br>
                                                                                                 </label>
-                                                                                                <input type="text" name="titre" required/>
+                                                                                                <input type="text" name="title" required/>
                                                                                                 </div>
                                                                                                 <div class="categorie">
                                                                                                 <label>
                                                                                                     Catégorie<br>
                                                                                                 </label>
-                                                                                                    <select name="categorie" id="categorie-select" required>
+                                                                                                    <select name="category" id="categorie-select" required>
                                                                                                         <option value="" disabled selected hidden></option>
                                                                                                     </select>
                                                                                                     <i class="fa-solid fa-angle-down"></i>
@@ -141,6 +141,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                             const galleryView = modal1.querySelector(".modal-gallery-view");
                                                             const formView = modal1.querySelector(".modal-form-view");
                                                             const btnRetour = modal1.querySelector(".btnretour");
+                                                            const btnValider = modal1.querySelector("#addphoto");
+                                                            
 
                                                             btnAjoutphoto.addEventListener("click", () => {
                                                                 galleryView.style.display = "none";
@@ -152,11 +154,70 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                 formView.style.display = "none";
                                                             });
 
-                                                            document.getElementById("addphoto").addEventListener("submit", function(event) {
-                                                                if (!this.checkValidity()) {
+                                                            btnValider.addEventListener("submit", function (event) {
+                                                                    if (!btnValider.checkValidity()) {
                                                                     event.preventDefault();
-                                                                        return;
+                                                                    btnValider.reportValidity(); // Affiche les erreurs HTML5
+                                                                    return;
                                                                 }
+                                                                event.preventDefault();
+
+                                                                    const formDataPhoto = new FormData(addphoto);
+                                                                    const dataObjetc = {};
+                                                                        formDataPhoto.forEach((value, key) => {
+                                                                        dataObjetc[key] = value;
+                                                                        console.log(key, value);
+                                                                });
+
+                                                                fetch("http://localhost:5678/api/works", {
+                                                                    method: "POST",
+                                                                    headers: {
+                                                                        "accept": "*/*",
+                                                                        "Authorization": `Bearer ${token}`,
+                                                                    },
+                                                                    body: formDataPhoto,
+                                                                })
+                                                                .then(response => {
+                                                                    if (!response.ok) {
+                                                                        return response.text()
+                                                                    } else {
+                                                                        return fetch("http://localhost:5678/api/works")
+                                                                    }
+                                                                })
+                                                                .then(response => response.json())  
+                                                                .then(newData => {
+                                                                    console.log("Liste mise a jour :", newData)
+                                                                    genereWorks(newData);
+                                                                    genereWorksGallery(newData);
+                                                                        galleryView.style.display = "flex";
+                                                                        formView.style.display = "none";
+                                                                })
+                                                                .catch(error => {
+                                                                    console.error("Problème avec l'envoi du formulaire", error)
+                                                                });
+                                                            });
+
+                                                            const form = document.getElementById("addphoto")
+                                                            const validColor = modal1.querySelector(".btn-valider");
+
+                                                            form.addEventListener("input", function () {
+                                                                if (form.checkValidity()) {
+                                                                    validColor.style.backgroundColor = "#1EDD88";
+                                                                    validColor.disabled = false;
+                                                                } else {
+                                                                    validColor.style.backgroundColor = "gray";
+                                                                    validColor.disabled = true;
+                                                                }
+                                                            });
+
+                                                            form.addEventListener("submit", function (event) {
+                                                                if (!form.checkValidity()) {
+                                                                    event.preventDefault();
+                                                                    form.reportValidity(); // Affiche les erreurs HTML5
+                                                                    return;
+                                                                }
+
+                                                                
                                                             })
 
                                                             function closeModal () {

@@ -297,12 +297,16 @@ function genereWorks(data){
             ///// Fonction pour afficher les travaux (works) MODAL !! /////
 function genereWorksGallery(data){
     const modalGallery = document.querySelector(".modal-gallery");
+    modalGallery.innerHTML = "";
     
      for (let i = 0; i < data.length; i++) {
 
             // Création des balises HTML //
 
         const figure = data[i];
+
+        if (data[i] === data.id)
+            break;
 
         
         const worksElementModal = document.createElement("figure");
@@ -320,13 +324,15 @@ function genereWorksGallery(data){
         worksElementModal.appendChild(worksImgModal);
         worksElementModal.appendChild(deleteIcon);
         modalGallery.appendChild(worksElementModal);
-    };
-    const deleteIcon = document.querySelector(".fa-trash-can");
+    
+
+    
          deleteIcon.addEventListener("click", async (event) => {
             event.preventDefault();
+            
 
             const dataId = event.target.dataset.id;
-                                                                            
+                          console.log(dataId)                                                  
                 await fetch(`http://localhost:5678/api/works/${dataId}`, {
                     method: "DELETE",
                     headers: {
@@ -341,6 +347,7 @@ function genereWorksGallery(data){
                             return response.text();
                     } else {
                         console.log("Travail supprimé !");
+                            
                             genereWorksGallery(data);
                                                                                         
                     }
@@ -349,6 +356,7 @@ function genereWorksGallery(data){
                     console.log("Réponse brute :", text);})
                 .catch(error => console.error("Erreur réseau :", error));
         });
+    };
 }
    
 

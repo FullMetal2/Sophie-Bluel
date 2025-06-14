@@ -305,10 +305,6 @@ function genereWorksGallery(data){
 
         const figure = data[i];
 
-        if (data[i] === data.id)
-            break;
-
-        
         const worksElementModal = document.createElement("figure");
         worksElementModal.id = figure.id;
         worksElementModal.style.position = "relative";
@@ -347,13 +343,15 @@ function genereWorksGallery(data){
                             return response.text();
                     } else {
                         console.log("Travail supprimé !");
-                            
-                            genereWorksGallery(data);
+                        return fetch("http://localhost:5678/api/works")
                                                                                         
                     }
                 })
-                .then(text => {
-                    console.log("Réponse brute :", text);})
+                .then(response => response.json())
+                .then(newData => {
+                    genereWorks(newData);
+                    genereWorksGallery(newData);
+                })
                 .catch(error => console.error("Erreur réseau :", error));
         });
     };

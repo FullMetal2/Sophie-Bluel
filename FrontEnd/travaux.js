@@ -1,5 +1,5 @@
         const isAdmin = window.localStorage.getItem("isAdmin") === "true";
-        const token = window.localStorage.getItem("Token");
+        const token = window.localStorage.getItem("token");
         let data = [];
        
        
@@ -134,6 +134,36 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                     
                                                             genereWorksGallery(data);
                                                             document.body.classList.add("no-scroll");
+
+                                                                 const deleteIcon = document.querySelector(".fa-trash-can");
+        deleteIcon.addEventListener("click", async (event) => {
+            event.preventDefault();
+
+                const dataId = event.target.dataset.id;
+                
+                    await fetch(`http://localhost:5678/api/works/${dataId}`, {
+                        method: "DELETE",
+                        headers: {
+                            "accept": "*/*",
+                            "Authorization": `Bearer ${token}`
+                        },
+                    })
+                    
+                    .then(response => {
+                        if(!response.ok) {
+                            console.error("Erreur :", response.status);
+                            return response.text();
+                        } else {
+                            console.log("Travail supprimé !");
+                           genereWorksGallery(data);
+                            
+                        }
+                    })
+                    .then(text => {
+    console.log("Réponse brute :", text);})
+                    .catch(error => console.error("Erreur réseau :", error));
+});
+
 
                                                             remplirSelectCategorie(data);
 
@@ -314,47 +344,41 @@ function genereWorksGallery(data){
 
         const deleteIcon = document.createElement("i");
         deleteIcon.classList.add("fa-solid", "fa-trash-can");
+        deleteIcon.dataset.id = data[i].id;
+        console.log(data[i].id);
 
-        
         worksElementModal.appendChild(worksImgModal);
         worksElementModal.appendChild(deleteIcon);
         modalGallery.appendChild(worksElementModal);
     };
-};
+}
+   
 
 function remplirSelectCategorie(data) {
 
     const selectElement = document.getElementById("categorie-select");
 
-    //const optionVide = document.createElement("otpion")
-        //optionVide.value = "";
-        //optionVide.textContent = "Catégories";
-        //optionVide.disabled = true;
-        //optionVide.selected = true;
-        //optionVide.hidden = true;
-            //selectElement.appendChild(optionVide);
+        let compteur = 0
 
-            let compteur = 0
-
-        for (let i = 0; i < data.length; i++) { 
-            
-            const categorie =  data[i].category;
-
-            if (categorie.id === 1 || categorie.id === 2 || categorie.id === 3) {
-
-                const option = document.createElement("option");
-                option.value = categorie.id;
-                option.textContent = categorie.name;
-                    selectElement.appendChild(option);
-                    console.log(categorie)
-                        compteur++;
+            for (let i = 0; i < data.length; i++) { 
                 
+                const categorie =  data[i].category;
 
-                            if (compteur === 3) {
-                                break;
-                            };
+                if (categorie.id === 1 || categorie.id === 2 || categorie.id === 3) {
+
+                    const option = document.createElement("option");
+                    option.value = categorie.id;
+                    option.textContent = categorie.name;
+                        selectElement.appendChild(option);
+                        console.log(categorie)
+                            compteur++;
+                    
+
+                                if (compteur === 3) {
+                                    break;
+                                };
+                };
             };
-        };
 };
       
 

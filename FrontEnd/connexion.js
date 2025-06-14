@@ -81,7 +81,7 @@ function login(dataObject) {
             .then (data => {
                     console.log("Réponse connexion API :", data);
 
-                        window.localStorage.setItem("Token", JSON.stringify(data.token));
+                        window.localStorage.setItem("token", (data.token));
                         const userId = data.userId;
                             if (userId === 1) {
                                 window.localStorage.setItem("isAdmin", true);

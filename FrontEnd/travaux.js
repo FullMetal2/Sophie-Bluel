@@ -17,14 +17,23 @@ async function getWorks() {
         return [];
     } 
 };   
+
+
+        ///// écouteur d'évenement si admin connecté ou pas, changement de DOM pour ajouter des projets /////
           
 document.addEventListener("DOMContentLoaded", async function() {
-                    
+
+        // Token stoké dans le localeStorage //  
+
     console.log("Token", token);
     console.log("Admin :", isAdmin);
 
+        // Récupération du tableau data avec toutes les données de l'API //
+
         data = await getWorks();
         genereWorks(data);
+
+        // Si ce n'est pas l'admin on génère les bouton filtre pour la HOMEPAGE //
 
             if (!isAdmin) {
 
@@ -32,8 +41,12 @@ document.addEventListener("DOMContentLoaded", async function() {
                 genereFiltre(worksCategory, data);
             };
 
+            // Si admin alors la fonction pour rajouter supprimer des travaux //
+
                 if (isAdmin) {
                     console.log("Bienvenue admin :", isAdmin);
+
+                    // Préparation de la page admin et mode édition //
 
                         const filter = document.querySelector(".btn-filtre");
                         const editionModeBar = document.querySelector("body");
@@ -68,7 +81,10 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                             <div>Mode édition</div>  
                                                                         </div>`;
                                                 header.style.marginTop = "100px";
-                                            }
+                                            };
+
+
+                                                    // Bouton Modifier ouverture modal plus génération de la galeries des projets dans la modal, avec en paramètre la liste des travaux API mise a jour si un projet a étais supprimer //
 
                                                     btnEditMode.addEventListener("click", async function (event) {
                                                         event.preventDefault();
@@ -77,15 +93,44 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                     if(!response.ok) {
                                                                         throw new Error("Erreur lors du chargement des travaux");
                                                             }
-                                                                const updateData = await response.json();
-                                                                
-                                                               
+                                                                const updateData = await response.json();           
 
-                                                            
+                                                        // Création modal avec 2 vue (vue 1 : galerie avec possibilité de supprimer un projet, vue 2 : formulaire pour ajouter un nouveau projet) //
+
                                                         const overlay = document.createElement("div");
                                                             overlay.classList.add("overlay");
 
                                                             const modal1 = document.createElement("aside");
+                                                            modal1.addEventListener("click", function (event) {
+
+                                                                const poubelleClick = event.target;
+                                                                console.log("a :", event.target);
+
+                                                                if (poubelleClick.classList.contains("fa-trash-can")) {
+                                                                    const dataId = poubelleClick.dataset.id;
+                                                                    fetch(`http://localhost:5678/api/works/1`, {
+                                                                        method: "DELETE",
+                                                                        headers: {
+                                                                            "accept": "*/*",
+                                                                            "Authorization": `Bearer ${token}`
+                                                                        },
+                                                                }).then(response => {
+                                                                    console.log("réponse api :", response.status);
+
+                                                                        if (response.ok) {
+                                                                            console.log(`Travail ID ${dataId} supprimé avec succèes`)
+                                                                            poubelleClick.closest("figure")?.remove();
+                                                                        } else {
+                                                                            console.error("Erreur de fetch DELETE :", error);
+                                                                        }
+                                                                })
+                                                                
+                                                               
+                                                                }
+                                                                
+
+
+                                                            })
                                                             modal1.classList.add("styleModale");
                                                                 modal1.innerHTML = `<div class="modal-gallery-view">
                                                                                         <h2 class="titleModale">Galerie photo</h2>
@@ -150,8 +195,9 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                             const formView = modal1.querySelector(".modal-form-view");
                                                             const btnRetour = modal1.querySelector(".btnretour");
                                                             const btnValider = modal1.querySelector("#addphoto");
-                                                            const inputFile = modal1.querySelector("#image")
- 
+                                                            const inputFile = modal1.querySelector("#image");
+
+                                                            // écouteur d'évenement pour bouton retour retour dans la modal //
 
                                                             btnAjoutphoto.addEventListener("click", () => {
                                                                 galleryView.style.display = "none";
@@ -162,6 +208,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                 galleryView.style.display = "flex";
                                                                 formView.style.display = "none";
                                                             });
+
+                                                            // écouteur d'évenement pour afficher la nouvelle image d'un nouveau projet dans le formulaire //
 
                                                             inputFile.addEventListener("change", function (event) {
                                                                 const file = event.target.files[0];
@@ -184,14 +232,12 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                 reader.readAsDataURL(file);
                                                             }});
                                                             
+                                                            // écouteur d'évenement pour requête API POST pour un nouveau projet //
 
                                                             btnValider.addEventListener("submit", function (event) {
-                                                                    if (!btnValider.checkValidity()) {
-                                                                    event.preventDefault();
-                                                                    btnValider.reportValidity(); 
-                                                                    return;
-                                                                }
                                                                 event.preventDefault();
+
+                                                                // Récupération des données du formulaire (formData) pour requête POST API //
 
                                                                     const formDataPhoto = new FormData(addphoto);
                                                                     const dataObjetc = {};
@@ -218,8 +264,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                 .then(response => response.json())  
                                                                 .then(newData => {
                                                                     console.log("Liste mise a jour :", newData)
-                                                                    genereWorks(newData);
-                                                                    genereWorksGallery(newData);
+                                                                    // genereWorks(newData);
+                                                                    // genereWorksGallery(newData);
                                                                     closeModal ();
                                                                 })
                                                                 .catch(error => {
@@ -227,6 +273,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                 });
                                                             });
  
+                                                            // Validation du formulaire pour envoyé un nouvau projet a l'API //
 
                                                             const form = document.getElementById("addphoto")
                                                             const validColor = modal1.querySelector(".btn-valider");
@@ -235,14 +282,15 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                 if (form.checkValidity()) {
                                                                     validColor.style.backgroundColor = "#1D6154";
                                                                     validColor.disabled = false;
-                                                                } else {
+                                                                } if(!form.checkValidity()) {
+                                                                    event.preventDefault();
+                                                                    btnValider.reportValidity();
                                                                     validColor.style.backgroundColor = "gray";
                                                                     validColor.disabled = true;
                                                                 }
                                                             });
 
-
-
+                                                            // Fonction pour fermer la modale en cliquant sur la crois, or de la modal et en envoyant un nouveau projet a l'API//
 
                                                             function closeModal () {
                                                                 overlay.remove();
@@ -392,7 +440,7 @@ function genereWorksGallery(data){
         const figure = data[i];
 
         const worksElementModal = document.createElement("figure");
-        worksElementModal.id = figure.id;
+        worksElementModal.id = "miniature_" + figure.id;
         worksElementModal.style.position = "relative";
 
         const worksImgModal = document.createElement("img");
@@ -401,45 +449,12 @@ function genereWorksGallery(data){
         const deleteIcon = document.createElement("i");
         deleteIcon.classList.add("fa-solid", "fa-trash-can");
         deleteIcon.dataset.id = data[i].id;
-        //console.log(data[i].id);
+        
 
         worksElementModal.appendChild(worksImgModal);
         worksElementModal.appendChild(deleteIcon);
         modalGallery.appendChild(worksElementModal);
     
-    
-
-
-         deleteIcon.addEventListener("click", async (event) => {
-            event.preventDefault();
-            
-            
-            const dataId = event.target.dataset.id;
-                          console.log(dataId)                                                  
-                await fetch(`http://localhost:5678/api/works/${dataId}`, {
-                    method: "DELETE",
-                    headers: {
-                        "accept": "*/*",
-                        "Authorization": `Bearer ${token}`
-                    },
-                })
-                                                                              
-                .then(response => {
-                    if(!response.ok) {
-                        console.error("Erreur :", response.status);
-                            return response.text();
-                    } else {
-                        console.log("Travail supprimé !");
-                        return fetch("http://localhost:5678/api/works")
-                    }
-                })
-                .then(response => response.json())
-                .then(newData => {
-                    genereWorks(newData);
-                    genereWorksGallery(newData);
-                })
-                .catch(error => console.error("Erreur réseau :", error));
-        });
     };
 }  
 

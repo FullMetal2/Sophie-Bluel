@@ -540,7 +540,7 @@ select {
 }
 .fa-solid.fa-angle-down {
 	position: absolute;
-	bottom: 203px;
+	bottom: 190px;
 	right: 125px;
 	cursor: pointer;
 	pointer-events: none;

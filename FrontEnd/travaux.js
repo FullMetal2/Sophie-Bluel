@@ -2,7 +2,6 @@
         const token = window.localStorage.getItem("token");
         let data = [];
        
-       
         ///// Récupération des travaux depuis l'API /////
 async function getWorks() {
     try {
@@ -71,8 +70,17 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                 header.style.marginTop = "100px";
                                             }
 
-                                                    btnEditMode.addEventListener("click", function (event) {
+                                                    btnEditMode.addEventListener("click", async function (event) {
                                                         event.preventDefault();
+                                                            try {
+                                                                const response = await fetch("http://localhost:5678/api/works");
+                                                                    if(!response.ok) {
+                                                                        throw new Error("Erreur lors du chargement des travaux");
+                                                            }
+                                                                const updateData = await response.json();
+                                                                
+                                                               
+
                                                             
                                                         const overlay = document.createElement("div");
                                                             overlay.classList.add("overlay");
@@ -113,7 +121,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                                                 <label>
                                                                                                     Titre<br>
                                                                                                 </label>
-                                                                                                <input type="text" name="title" required/>
+                                                                                                <input type="text" name="title" required>
                                                                                                 </div>
                                                                                                 <div class="categorie">
                                                                                                 <label>
@@ -131,10 +139,10 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                 
                                                             document.body.appendChild(overlay);
                                                             document.body.appendChild(modal1);
-                                                                    
-                                                            genereWorksGallery(data);
-                                                            document.body.classList.add("no-scroll");
 
+                                                            genereWorksGallery(updateData);
+
+                                                            document.body.classList.add("no-scroll");
                                                             remplirSelectCategorie(data);
 
                                                             const btnAjoutphoto = modal1.querySelector(".btnphoto");
@@ -142,7 +150,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                             const formView = modal1.querySelector(".modal-form-view");
                                                             const btnRetour = modal1.querySelector(".btnretour");
                                                             const btnValider = modal1.querySelector("#addphoto");
-                                                            
+                                                            const inputFile = modal1.querySelector("#image")
+ 
 
                                                             btnAjoutphoto.addEventListener("click", () => {
                                                                 galleryView.style.display = "none";
@@ -154,10 +163,32 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                 formView.style.display = "none";
                                                             });
 
+                                                            inputFile.addEventListener("change", function (event) {
+                                                                const file = event.target.files[0];
+
+                                                                if (file) {
+                                                                    const reader = new FileReader();
+
+                                                                    reader.onload = function (e) {
+                                                                        const uploadLabel = modal1.querySelector(".upload-label")
+                                                                        uploadLabel.style.display = 'none';
+
+                                                                        const previewImage = document.createElement("img");
+                                                                        previewImage.src = e.target.result;
+                                                                        previewImage.alt = "Aperçu de l'image sélectionné";
+                                                                        previewImage.classList.add('preview-image')
+
+                                                                        const uploadcontainer = modal1.querySelector(".upload");
+                                                                        uploadcontainer.appendChild(previewImage);
+                                                                    };
+                                                                reader.readAsDataURL(file);
+                                                            }});
+                                                            
+
                                                             btnValider.addEventListener("submit", function (event) {
                                                                     if (!btnValider.checkValidity()) {
                                                                     event.preventDefault();
-                                                                    btnValider.reportValidity(); // Affiche les erreurs HTML5
+                                                                    btnValider.reportValidity(); 
                                                                     return;
                                                                 }
                                                                 event.preventDefault();
@@ -189,20 +220,20 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                     console.log("Liste mise a jour :", newData)
                                                                     genereWorks(newData);
                                                                     genereWorksGallery(newData);
-                                                                        galleryView.style.display = "flex";
-                                                                        formView.style.display = "none";
+                                                                    closeModal ();
                                                                 })
                                                                 .catch(error => {
                                                                     console.error("Problème avec l'envoi du formulaire", error)
                                                                 });
                                                             });
+ 
 
                                                             const form = document.getElementById("addphoto")
                                                             const validColor = modal1.querySelector(".btn-valider");
 
                                                             form.addEventListener("input", function () {
                                                                 if (form.checkValidity()) {
-                                                                    validColor.style.backgroundColor = "#1EDD88";
+                                                                    validColor.style.backgroundColor = "#1D6154";
                                                                     validColor.disabled = false;
                                                                 } else {
                                                                     validColor.style.backgroundColor = "gray";
@@ -210,15 +241,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                 }
                                                             });
 
-                                                            form.addEventListener("submit", function (event) {
-                                                                if (!form.checkValidity()) {
-                                                                    event.preventDefault();
-                                                                    form.reportValidity(); // Affiche les erreurs HTML5
-                                                                    return;
-                                                                }
 
-                                                                
-                                                            })
+
 
                                                             function closeModal () {
                                                                 overlay.remove();
@@ -231,16 +255,17 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                 modal1.querySelector(".btnClose").addEventListener("click", closeModal);
                                                                 modal1.querySelector(".btnCloseForm").addEventListener("click", closeModal);
                                                                 genereWorks(data, ".modal-gallery");
+                                                    
+                                                            
+                                                         } catch (error) {
+                                                            console.error("Erreur lors de l'ouverture de la modale :", error);
+                                                    }
                                                     });
                                                             
-                                                            
-                                                                } else {
-                                                                    console.log("Bienvenue utilisateur :");
-                                                                };
-});
-        
-        
-    
+                    } else {
+                            console.log("Bienvenue utilisateur :");
+                    }
+                });
                     
         
         
@@ -382,12 +407,13 @@ function genereWorksGallery(data){
         worksElementModal.appendChild(deleteIcon);
         modalGallery.appendChild(worksElementModal);
     
-
     
+
+
          deleteIcon.addEventListener("click", async (event) => {
             event.preventDefault();
             
-
+            
             const dataId = event.target.dataset.id;
                           console.log(dataId)                                                  
                 await fetch(`http://localhost:5678/api/works/${dataId}`, {
@@ -397,7 +423,7 @@ function genereWorksGallery(data){
                         "Authorization": `Bearer ${token}`
                     },
                 })
-                                                                                
+                                                                              
                 .then(response => {
                     if(!response.ok) {
                         console.error("Erreur :", response.status);
@@ -405,7 +431,6 @@ function genereWorksGallery(data){
                     } else {
                         console.log("Travail supprimé !");
                         return fetch("http://localhost:5678/api/works")
-                                                                                        
                     }
                 })
                 .then(response => response.json())
@@ -416,7 +441,8 @@ function genereWorksGallery(data){
                 .catch(error => console.error("Erreur réseau :", error));
         });
     };
-}
+}  
+
    
 
 function remplirSelectCategorie(data) {

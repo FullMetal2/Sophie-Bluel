@@ -1,138 +1,108 @@
-        const isAdmin = window.localStorage.getItem("isAdmin") === "true";
-        const token = window.localStorage.getItem("token");
-        let data = [];
-       
-        ///// Récupération des travaux depuis l'API /////
+/**************************************/
+/* 1. Variable globales + fetch init */
+/**************************************/
+
+const isAdmin = window.localStorage.getItem("isAdmin") === "true";
+const token = window.localStorage.getItem("token");
+let data = [];
+
+/* Récupération des travaux depuis l'API */
+
 async function getWorks() {
-    try {
-        const response = await fetch("http://localhost:5678/api/works"); // Serveur API //
-            console.log("Réponse brute de l'API :", response);
-        const works = await response.json();
-        data = works
-            console.log("Transformation de la réponse API en tableau utilisable en JS", works);  // works = tableau de données (Works) //
-        return works;
-        
-    } catch (error) {
-        console.error("Erreur lors de la récupération des travaux :", (error));
-        return [];
-    } 
-};   
+  try {
+    const response = await fetch("http://localhost:5678/api/works"); // Serveur API //
+    console.log("Réponse brute de l'API :", response);
+    const works = await response.json();
+    data = works;
+    console.log(
+      "Transformation de la réponse API en tableau utilisable en JS",
+      works
+    ); // works = tableau de données (Works) //
+    return works; /* a voir !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+  } catch (error) {
+    console.error("Erreur lors de la récupération des travaux :", error);
+    return []; /* a voir !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+  }
+}
 
+/**************************************/
+/* 2. Chargement du DOM + logique admin */
+/**************************************/
 
-        ///// écouteur d'évenement si admin connecté ou pas, changement de DOM pour ajouter des projets /////
-          
-document.addEventListener("DOMContentLoaded", async function() {
+/* écouteur d'évenement si admin connecté ou pas, changement de DOM pour ajouter des projets */
 
-        // Token stoké dans le localeStorage //  
+document.addEventListener("DOMContentLoaded", async function () {
+  /* Token stoké dans le localeStorage */
 
-    console.log("Token", token);
-    console.log("Admin :", isAdmin);
+  console.log("Token", token);
+  console.log("Admin :", isAdmin);
 
-        // Récupération du tableau data avec toutes les données de l'API //
+  /* Récupération du tableau data avec toutes les données de l'API */
 
-        data = await getWorks();
-        genereWorks(data);
+  data = await getWorks();
+  genereWorks(data);
 
-        // Si ce n'est pas l'admin on génère les bouton filtre pour la HOMEPAGE //
+  /* Si ce n'est pas l'admin on génère les bouton filtre pour la HOMEPAGE */
 
-            if (!isAdmin) {
+  if (!isAdmin) {
+    const worksCategory = trierCategory(data);
+    genereFiltre(worksCategory, data);
+  }
 
-                const worksCategory = trierCategory(data);
-                genereFiltre(worksCategory, data);
-            };
+  /* Si admin fonction pour ajouter et supprimer des travaux */
 
-            // Si admin alors la fonction pour rajouter supprimer des travaux //
+  if (isAdmin) {
+    console.log("Bienvenue admin :", isAdmin);
 
-                if (isAdmin) {
-                    console.log("Bienvenue admin :", isAdmin);
+    /* Préparation de la page admin et mode édition */
 
-                    // Préparation de la page admin et mode édition //
+    const editionModeBar = document.querySelector("body");
+    const header = document.querySelector("header");
+    const blackHighBar = document.createElement("div");
+    editionModeBar.appendChild(blackHighBar);
 
-                        const filter = document.querySelector(".btn-filtre");
-                        const editionModeBar = document.querySelector("body");
-                        const blackHighBar = document.createElement("div");
-                        editionModeBar.appendChild(blackHighBar);
+    blackHighBar.innerHTML = `<div class="high-bar">
+                                    <sapn class="iconHeader"><i class="fa-solid fa-pen-to-square"></i></sapn>
+                                    <div>Mode édition</div>  
+                                </div>`;
+    header.style.marginTop = "100px";
 
-                            const header = document.querySelector("header");
-                            const btnEditMode = document.createElement("div");
-                            btnEditMode.innerHTML = `<button class="icone">
-                                                        <i class="fa-regular fa-pen-to-square"></i>
-                                                            Modifier
-                                                    </button>`;
-                            btnEditMode.classList.add("divEdit");
-                            const modifEditMode = document.querySelector("#portfolio h2");
-                            modifEditMode.appendChild(btnEditMode);
+    const btnEditMode = document.createElement("div");
+    btnEditMode.innerHTML = `<button class="icone">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                                Modifier
+                            </button>`;
+    btnEditMode.classList.add("divEdit");
+    const modifEditMode = document.querySelector("#portfolio h2");
+    (modifEditMode.style.flexDirection = "row"),
+      (modifEditMode.style.justifyContent = "center");
+    modifEditMode.appendChild(btnEditMode);
 
-                                const logIn = document.querySelector(".login");
-                                logIn.style.display = 'none';
-                                const logOut = document.querySelector(".logout");
-                                logOut.style.display = 'block';
-                                logOut.textContent = "Logout";
-                                logOut.style.cursor = "pointer";
-                                    logOut.addEventListener("click", function ()  {
-                                        window.localStorage.clear();
-                                        document.location.href = "index.html";
-                                });            
+    const logIn = document.querySelector(".login");
+    logIn.textContent = "Logout";
+    logIn.addEventListener("click", function () {
+      window.localStorage.clear();
+      document.location.href = "index.html";
+    });
 
-                                            if (filter) {
-                                                filter.innerHTML = "";
-                                                blackHighBar.innerHTML = `<div class="high-bar">
-                                                                            <sapn class="iconHeader"><i class="fa-solid fa-pen-to-square"></i></sapn>
-                                                                            <div>Mode édition</div>  
-                                                                        </div>`;
-                                                header.style.marginTop = "100px";
-                                            };
+    /* Bouton Modifier ouverture modal plus génération de la galeries des projets dans la modal, avec en paramètre la liste des travaux API mise a jour si un projet a étais supprimer */
 
+    btnEditMode.addEventListener("click", function (event) {
+      event.preventDefault();
+      getWorks(data);
 
-                                                    // Bouton Modifier ouverture modal plus génération de la galeries des projets dans la modal, avec en paramètre la liste des travaux API mise a jour si un projet a étais supprimer //
+      /* Création modal avec 2 vue (vue 1 : galerie avec possibilité de supprimer un projet, vue 2 : formulaire pour ajouter un nouveau projet) */
 
-                                                    btnEditMode.addEventListener("click", async function (event) {
-                                                        event.preventDefault();
-                                                            try {
-                                                                const response = await fetch("http://localhost:5678/api/works");
-                                                                    if(!response.ok) {
-                                                                        throw new Error("Erreur lors du chargement des travaux");
-                                                            }
-                                                                const updateData = await response.json();           
+      const overlay = document.createElement("div");
+      overlay.classList.add("overlay");
+      document.body.classList.add("no-scroll");
 
-                                                        // Création modal avec 2 vue (vue 1 : galerie avec possibilité de supprimer un projet, vue 2 : formulaire pour ajouter un nouveau projet) //
-
-                                                        const overlay = document.createElement("div");
-                                                            overlay.classList.add("overlay");
-
-                                                            const modal1 = document.createElement("aside");
-                                                            modal1.addEventListener("click", function (event) {
-
-                                                                const poubelleClick = event.target;
-                                                                console.log("a :", event.target);
-
-                                                                if (poubelleClick.classList.contains("fa-trash-can")) {
-                                                                    const dataId = poubelleClick.dataset.id;
-                                                                    fetch(`http://localhost:5678/api/works/1`, {
-                                                                        method: "DELETE",
-                                                                        headers: {
-                                                                            "accept": "*/*",
-                                                                            "Authorization": `Bearer ${token}`
-                                                                        },
-                                                                }).then(response => {
-                                                                    console.log("réponse api :", response.status);
-
-                                                                        if (response.ok) {
-                                                                            console.log(`Travail ID ${dataId} supprimé avec succèes`)
-                                                                            poubelleClick.closest("figure")?.remove();
-                                                                        } else {
-                                                                            console.error("Erreur de fetch DELETE :", error);
-                                                                        }
-                                                                })
-                                                                
-                                                               
-                                                                }
-                                                                
-
-
-                                                            })
-                                                            modal1.classList.add("styleModale");
-                                                                modal1.innerHTML = `<div class="modal-gallery-view">
+      const modal1 = document.createElement("aside");
+      modal1.addEventListener("click", function (event) {
+        deleteWorks();
+      });
+      modal1.classList.add("styleModale");
+      modal1.innerHTML = `<div class="modal-gallery-view">
                                                                                         <h2 class="titleModale">Galerie photo</h2>
                                                                                         <button class="btnClose">
                                                                                             <i class="fa-solid fa-xmark"></i>
@@ -181,317 +151,330 @@ document.addEventListener("DOMContentLoaded", async function() {
                                                                                                 <button type="submit" class="btn-valider">Valider</button>
                                                                                             </form>
                                                                                     </div>`;
-                                                                
-                                                            document.body.appendChild(overlay);
-                                                            document.body.appendChild(modal1);
 
-                                                            genereWorksGallery(updateData);
+      document.body.appendChild(overlay);
+      document.body.appendChild(modal1);
 
-                                                            document.body.classList.add("no-scroll");
-                                                            remplirSelectCategorie(data);
+      genereWorksGallery(data);
+      changeViewModal();
+      remplirSelectCategorie(data);
+      inputFile();
 
-                                                            const btnAjoutphoto = modal1.querySelector(".btnphoto");
-                                                            const galleryView = modal1.querySelector(".modal-gallery-view");
-                                                            const formView = modal1.querySelector(".modal-form-view");
-                                                            const btnRetour = modal1.querySelector(".btnretour");
-                                                            const btnValider = modal1.querySelector("#addphoto");
-                                                            const inputFile = modal1.querySelector("#image");
+      // écouteur d'évenement pour requête API POST pour un nouveau projet //
+      const btnValider = document.querySelector("#addphoto");
+      btnValider.addEventListener("submit", function (event) {
+        event.preventDefault();
+        sendWorks(data);
+        closeModal();
+      });
 
-                                                            // écouteur d'évenement pour bouton retour retour dans la modal //
+      checkForm();
 
-                                                            btnAjoutphoto.addEventListener("click", () => {
-                                                                galleryView.style.display = "none";
-                                                                formView.style.display = "flex";
-                                                            });
+      overlay.addEventListener("click", closeModal);
 
-                                                            btnRetour.addEventListener("click", () => {
-                                                                galleryView.style.display = "flex";
-                                                                formView.style.display = "none";
-                                                            });
+      modal1.querySelector(".btnClose").addEventListener("click", closeModal);
 
-                                                            // écouteur d'évenement pour afficher la nouvelle image d'un nouveau projet dans le formulaire //
+      modal1
+        .querySelector(".btnCloseForm")
+        .addEventListener("click", closeModal);
 
-                                                            inputFile.addEventListener("change", function (event) {
-                                                                const file = event.target.files[0];
+      genereWorks(data, ".modal-gallery");
+    });
+  } else {
+    console.log("Bienvenue utilisateur :");
+  }
+});
 
-                                                                if (file) {
-                                                                    const reader = new FileReader();
+function genereFiltre(worksCategory, data) {
+  //Création des boutons filtres ( balises du DOM )  //
+  const filtreClass = document.querySelector("#portfolio h2");
+  const filtre = document.createElement("div");
+  filtre.classList.add("btn-filtre");
+  filtreClass.appendChild(filtre);
 
-                                                                    reader.onload = function (e) {
-                                                                        const uploadLabel = modal1.querySelector(".upload-label")
-                                                                        uploadLabel.style.display = 'none';
+  const btnTous = document.createElement("button");
+  btnTous.textContent = "Tous";
+  btnTous.addEventListener("click", function () {
+    console.log("Afiicher tous les travaux");
+    document.querySelector(".gallery").innerHTML = "";
+    genereWorks(data, ".gallery");
+  });
 
-                                                                        const previewImage = document.createElement("img");
-                                                                        previewImage.src = e.target.result;
-                                                                        previewImage.alt = "Aperçu de l'image sélectionné";
-                                                                        previewImage.classList.add('preview-image')
+  const btnObjet = document.createElement("button");
+  btnObjet.textContent = "Objets";
+  btnObjet.addEventListener("click", function () {
+    const categoryId = 1;
+    console.log("Afficher la catégorie objets");
+    console.log(worksCategory[categoryId]);
+    document.querySelector(".gallery").innerHTML = "";
+    genereWorks(worksCategory[categoryId].item);
+  });
 
-                                                                        const uploadcontainer = modal1.querySelector(".upload");
-                                                                        uploadcontainer.appendChild(previewImage);
-                                                                    };
-                                                                reader.readAsDataURL(file);
-                                                            }});
-                                                            
-                                                            // écouteur d'évenement pour requête API POST pour un nouveau projet //
+  const btnAppart = document.createElement("button");
+  btnAppart.textContent = "Appartements";
+  btnAppart.addEventListener("click", function () {
+    const categoryId = 2;
+    console.log("Afficher la catégorie appartements");
+    console.log(worksCategory[categoryId]);
+    document.querySelector(".gallery").innerHTML = "";
+    genereWorks(worksCategory[categoryId].item);
+  });
 
-                                                            btnValider.addEventListener("submit", function (event) {
-                                                                event.preventDefault();
+  const btnHotel = document.createElement("button");
+  btnHotel.textContent = "Hôtels & Restaurants";
+  btnHotel.addEventListener("click", function () {
+    const categoryId = 3;
+    console.log("Afficher la catégorie hôtels & restaurants");
+    console.log(worksCategory[categoryId]);
+    document.querySelector(".gallery").innerHTML = "";
+    genereWorks(worksCategory[categoryId].item);
+  });
 
-                                                                // Récupération des données du formulaire (formData) pour requête POST API //
-
-                                                                    const formDataPhoto = new FormData(addphoto);
-                                                                    const dataObjetc = {};
-                                                                        formDataPhoto.forEach((value, key) => {
-                                                                        dataObjetc[key] = value;
-                                                                        console.log(key, value);
-                                                                });
-
-                                                                fetch("http://localhost:5678/api/works", {
-                                                                    method: "POST",
-                                                                    headers: {
-                                                                        "accept": "*/*",
-                                                                        "Authorization": `Bearer ${token}`,
-                                                                    },
-                                                                    body: formDataPhoto,
-                                                                })
-                                                                .then(response => {
-                                                                    if (!response.ok) {
-                                                                        return response.text()
-                                                                    } else {
-                                                                        return fetch("http://localhost:5678/api/works")
-                                                                    }
-                                                                })
-                                                                .then(response => response.json())  
-                                                                .then(newData => {
-                                                                    console.log("Liste mise a jour :", newData)
-                                                                    // genereWorks(newData);
-                                                                    // genereWorksGallery(newData);
-                                                                    closeModal ();
-                                                                })
-                                                                .catch(error => {
-                                                                    console.error("Problème avec l'envoi du formulaire", error)
-                                                                });
-                                                            });
- 
-                                                            // Validation du formulaire pour envoyé un nouvau projet a l'API //
-
-                                                            const form = document.getElementById("addphoto")
-                                                            const validColor = modal1.querySelector(".btn-valider");
-
-                                                            form.addEventListener("input", function () {
-                                                                if (form.checkValidity()) {
-                                                                    validColor.style.backgroundColor = "#1D6154";
-                                                                    validColor.disabled = false;
-                                                                } if(!form.checkValidity()) {
-                                                                    event.preventDefault();
-                                                                    btnValider.reportValidity();
-                                                                    validColor.style.backgroundColor = "gray";
-                                                                    validColor.disabled = true;
-                                                                }
-                                                            });
-
-                                                            // Fonction pour fermer la modale en cliquant sur la crois, or de la modal et en envoyant un nouveau projet a l'API//
-
-                                                            function closeModal () {
-                                                                overlay.remove();
-                                                                modal1.remove();
-                                                                document.body.classList.remove("no-scroll");
-
-                                                            }
-
-                                                            overlay.addEventListener("click", closeModal);
-                                                                modal1.querySelector(".btnClose").addEventListener("click", closeModal);
-                                                                modal1.querySelector(".btnCloseForm").addEventListener("click", closeModal);
-                                                                genereWorks(data, ".modal-gallery");
-                                                    
-                                                            
-                                                         } catch (error) {
-                                                            console.error("Erreur lors de l'ouverture de la modale :", error);
-                                                    }
-                                                    });
-                                                            
-                    } else {
-                            console.log("Bienvenue utilisateur :");
-                    }
-                });
-                    
-        
-        
-function genereFiltre(worksCategory, data){
-        
-        //Création des boutons filtres ( balises du DOM ) //
-        
-        const btnTous = document.createElement("button");
-        btnTous.textContent = "Tous";
-        btnTous.addEventListener("click", function() {
-            console.log("Afiicher tous les travaux");
-            document.querySelector(".gallery").innerHTML = "";
-            genereWorks(data, ".gallery");
-        });
-
-        const btnObjet = document.createElement("button");
-        btnObjet.textContent = "Objets";
-        btnObjet.addEventListener("click", function() {
-            const categoryId = 1;
-            console.log("Afficher la catégorie objets")
-            console.log(worksCategory[categoryId]);
-                document.querySelector(".gallery").innerHTML = "";
-                genereWorks(worksCategory[categoryId].item);
-        });
-        
-        const btnAppart = document.createElement("button");
-        btnAppart.textContent = "Appartements";
-        btnAppart.addEventListener("click", function() {
-            const categoryId = 2;
-            console.log("Afficher la catégorie appartements")
-            console.log(worksCategory[categoryId])
-                document.querySelector(".gallery").innerHTML = "";
-                genereWorks(worksCategory[categoryId].item);
-        });
-        
-        const btnHotel = document.createElement("button");
-        btnHotel.textContent = "Hôtels & Restaurants";
-        btnHotel.addEventListener("click", function() {
-            const categoryId = 3;
-            console.log("Afficher la catégorie hôtels & restaurants")
-            console.log(worksCategory[categoryId]);
-                document.querySelector(".gallery").innerHTML = "";
-                genereWorks(worksCategory[categoryId].item);
-        });
-
-           
-        const btnFiltre = document.querySelector(".btn-filtre");
-
-        btnFiltre.appendChild(btnTous);
-        btnFiltre.appendChild(btnObjet);
-        btnFiltre.appendChild(btnAppart);
-        btnFiltre.appendChild(btnHotel);
-}
-            
-
-
-        ///// Fonction pour trier par categorie /////
-   
-function trierCategory(data){
-
-    const worksCategory = {};
-
-        // Boucle for qui parcours le tableau works //
-
-            for (let i = 0; i < data.length; i++) {
-                const categoryId = data[i].category.id;
-                
-                    if (!worksCategory[categoryId]) {
-                        worksCategory[categoryId] = {
-                            id: data[i].category.id,
-                            name: data[i].category.name,
-                            item: []
-                        };
-                    };
-                worksCategory[categoryId].item.push(data[i]);
-                
-            };
-            return worksCategory;
+  const btnFiltre = document.querySelector(".btn-filtre");
+  btnFiltre.appendChild(btnTous);
+  btnFiltre.appendChild(btnObjet);
+  btnFiltre.appendChild(btnAppart);
+  btnFiltre.appendChild(btnHotel);
 }
 
- 
-           ///// Fonction pour afficher les travaux (works) HOMEPAGE !! /////
+///// Fonction pour trier par categorie /////
 
-function genereWorks(data){
-    const mainGallery = document.querySelector(".gallery");
-    
-        mainGallery.innerHTML = "";
-        
-            // Boucle for qui parcours le tableau works //
-            for (let i = 0; i < data.length; i++) {
+function trierCategory(data) {
+  const worksCategory = {};
 
-            // Création des balises HTML //
+  // Boucle for qui parcours le tableau works //
 
-                const figure = data[i];
+  for (let i = 0; i < data.length; i++) {
+    const categoryId = data[i].category.id;
 
-            // Rattachement au balise du DOM //
-                
-                const worksElement = document.createElement("figure");
-                worksElement.id = data[i].id;
+    if (!worksCategory[categoryId]) {
+      worksCategory[categoryId] = {
+        id: data[i].category.id,
+        name: data[i].category.name,
+        item: [],
+      };
+    }
+    worksCategory[categoryId].item.push(data[i]);
+  }
+  return worksCategory;
+}
 
-                const worksImg = document.createElement("img");
-                worksImg.src = figure.imageUrl;
+///// Fonction pour afficher les travaux (works) HOMEPAGE !! /////
 
-                const worksTitle = document.createElement("figcaption");
-                worksTitle.innerText = figure.title;
+function genereWorks(data) {
+  const mainGallery = document.querySelector(".gallery");
 
-            // Rattachement à la section du DOM //
+  mainGallery.innerHTML = "";
 
-                mainGallery.appendChild(worksElement);
-                worksElement.appendChild(worksImg);
-                worksElement.appendChild(worksTitle);
-            };
-};
+  // Boucle for qui parcours le tableau works //
+  for (let i = 0; i < data.length; i++) {
+    // Création des balises HTML //
 
-            ///// Fonction pour afficher les travaux (works) MODAL !! /////
-function genereWorksGallery(data){
-    const modalGallery = document.querySelector(".modal-gallery");
-    modalGallery.innerHTML = "";
-    
-     for (let i = 0; i < data.length; i++) {
+    const figure = data[i];
 
-            // Création des balises HTML //
+    // Rattachement au balise du DOM //
 
-        const figure = data[i];
+    const worksElement = document.createElement("figure");
+    worksElement.id = data[i].id;
 
-        const worksElementModal = document.createElement("figure");
-        worksElementModal.id = "miniature_" + figure.id;
-        worksElementModal.style.position = "relative";
+    const worksImg = document.createElement("img");
+    worksImg.src = figure.imageUrl;
 
-        const worksImgModal = document.createElement("img");
-        worksImgModal.src = figure.imageUrl;
+    const worksTitle = document.createElement("figcaption");
+    worksTitle.innerText = figure.title;
 
-        const deleteIcon = document.createElement("i");
-        deleteIcon.classList.add("fa-solid", "fa-trash-can");
-        deleteIcon.dataset.id = data[i].id;
-        
+    // Rattachement à la section du DOM //
 
-        worksElementModal.appendChild(worksImgModal);
-        worksElementModal.appendChild(deleteIcon);
-        modalGallery.appendChild(worksElementModal);
-    
-    };
-}  
+    mainGallery.appendChild(worksElement);
+    worksElement.appendChild(worksImg);
+    worksElement.appendChild(worksTitle);
+  }
+}
 
-   
+///// Fonction pour afficher les travaux (works) MODAL !! /////
+function genereWorksGallery(data) {
+  const modalGallery = document.querySelector(".modal-gallery");
+  modalGallery.innerHTML = "";
+
+  for (let i = 0; i < data.length; i++) {
+    // Création des balises HTML //
+
+    const figure = data[i];
+
+    const worksElementModal = document.createElement("figure");
+    worksElementModal.id = "miniature_" + figure.id;
+    worksElementModal.style.position = "relative";
+
+    const worksImgModal = document.createElement("img");
+    worksImgModal.src = figure.imageUrl;
+
+    const deleteIcon = document.createElement("i");
+    deleteIcon.classList.add("fa-solid", "fa-trash-can");
+    deleteIcon.dataset.id = data[i].id;
+
+    worksElementModal.appendChild(worksImgModal);
+    worksElementModal.appendChild(deleteIcon);
+    modalGallery.appendChild(worksElementModal);
+  }
+}
 
 function remplirSelectCategorie(data) {
+  const selectElement = document.getElementById("categorie-select");
 
-    const selectElement = document.getElementById("categorie-select");
+  let compteur = 0;
 
-        let compteur = 0
+  for (let i = 0; i < data.length; i++) {
+    const categorie = data[i].category;
 
-            for (let i = 0; i < data.length; i++) { 
-                
-                const categorie =  data[i].category;
+    if (categorie.id === 1 || categorie.id === 2 || categorie.id === 3) {
+      const option = document.createElement("option");
+      option.value = categorie.id;
+      option.textContent = categorie.name;
+      selectElement.appendChild(option);
+      console.log(categorie);
+      compteur++;
 
-                if (categorie.id === 1 || categorie.id === 2 || categorie.id === 3) {
+      if (compteur === 3) {
+        break;
+      }
+    }
+  }
+}
 
-                    const option = document.createElement("option");
-                    option.value = categorie.id;
-                    option.textContent = categorie.name;
-                        selectElement.appendChild(option);
-                        console.log(categorie)
-                            compteur++;
-                    
+function deleteWorks() {
+  const poubelleClick = event.target;
+  if (poubelleClick.classList.contains("fa-trash-can")) {
+    const dataId = poubelleClick.dataset.id;
+    fetch(`http://localhost:5678/api/works/${dataId}`, {
+      method: "DELETE",
+      headers: {
+        accept: "*/*",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((response) => {
+      console.log("réponse api :", response.status);
 
-                                if (compteur === 3) {
-                                    break;
-                                };
-                };
-            };
-};
-      
+      if (response.ok) {
+        console.log(`Travail ID ${dataId} supprimé avec succèes`);
+        poubelleClick.closest("figure")?.remove();
+      } else {
+        console.error("Erreur de fetch DELETE :", error);
+      }
+    });
+  }
+}
 
+function changeViewModal() {
+  const btnAjoutphoto = document.querySelector(".btnphoto");
+  const galleryView = document.querySelector(".modal-gallery-view");
+  const formView = document.querySelector(".modal-form-view");
+  const btnRetour = document.querySelector(".btnretour");
 
+  // écouteur d'évenement pour bouton retour retour dans la modal //
 
+  btnAjoutphoto.addEventListener("click", () => {
+    galleryView.style.display = "none";
+    formView.style.display = "flex";
+  });
 
+  btnRetour.addEventListener("click", () => {
+    galleryView.style.display = "flex";
+    formView.style.display = "none";
+  });
+}
 
+function inputFile() {
+  const inputFile = document.querySelector("#image");
 
-        
+  // écouteur d'évenement pour afficher la nouvelle image d'un nouveau projet dans le formulaire //
 
+  inputFile.addEventListener("change", function (event) {
+    const file = event.target.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const uploadLabel = document.querySelector(".upload-label");
+        uploadLabel.style.display = "none";
+
+        const previewImage = document.createElement("img");
+        previewImage.src = e.target.result;
+        previewImage.alt = "Aperçu de l'image sélectionné";
+        previewImage.classList.add("preview-image");
+
+        const uploadcontainer = document.querySelector(".upload");
+        uploadcontainer.appendChild(previewImage);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+}
+
+function sendWorks() {
+  // Récupération des données du formulaire (formData) pour requête POST API //
+
+  const formDataPhoto = new FormData(addphoto);
+  const dataObjetc = {};
+  formDataPhoto.forEach((value, key) => {
+    dataObjetc[key] = value;
+    console.log(key, value);
+  });
+
+  fetch("http://localhost:5678/api/works", {
+    method: "POST",
+    headers: {
+      accept: "*/*",
+      Authorization: `Bearer ${token}`,
+    },
+    body: formDataPhoto,
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.text();
+      } else {
+        return fetch("http://localhost:5678/api/works");
+      }
+    })
+    .then((response) => response.json())
+    .then((newData) => {
+      console.log("Liste mise a jour :", newData);
+    })
+    .catch((error) => {
+      console.error("Problème avec l'envoi du formulaire", error);
+    });
+}
+
+// Fonction pour fermer la modale en cliquant sur la crois, or de la modal et en envoyant un nouveau projet a l'API//
+
+function closeModal() {
+  const modal1 = document.querySelector("aside");
+  const overlay = document.querySelector(".overlay");
+  overlay.remove();
+  modal1.remove();
+  document.body.classList.remove("no-scroll");
+}
+
+function checkForm() {
+  // Validation du formulaire pour envoyé un nouvau projet a l'API //
+
+  const form = document.querySelector("#addphoto");
+  const validColor = document.querySelector(".btn-valider");
+
+  form.addEventListener("input", function () {
+    if (form.checkValidity()) {
+      validColor.style.backgroundColor = "#1D6154";
+      validColor.disabled = false;
+    } else {
+      validColor.style.backgroundColor = "gray";
+      validColor.disabled = true;
+    }
+  });
+
+  form.addEventListener("submit", function (event) {
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      form.reportValidity();
+    }
+  });
+}

@@ -357,6 +357,12 @@ function deleteWorks() {
       if (response.ok) {
         console.log(`Travail ID ${dataId} supprimé avec succèes`);
         poubelleClick.closest("figure")?.remove();
+
+        //document.querySelector(`[data-id = '${dataId}']`)?.remove();
+        data = data.filter((item) => item.id !== Number(dataId));
+
+        genereWorks(data);
+        genereWorksGallery(data);
       } else {
         console.error("Erreur de fetch DELETE :", error);
       }
@@ -429,16 +435,11 @@ function sendWorks() {
     },
     body: formDataPhoto,
   })
-    .then((response) => {
-      if (!response.ok) {
-        return response.text();
-      } else {
-        return fetch("http://localhost:5678/api/works");
-      }
-    })
     .then((response) => response.json())
     .then((newData) => {
       console.log("Liste mise a jour :", newData);
+      data.push(newData);
+      genereWorks(data);
     })
     .catch((error) => {
       console.error("Problème avec l'envoi du formulaire", error);

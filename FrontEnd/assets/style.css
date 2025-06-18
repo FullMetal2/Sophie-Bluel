@@ -233,11 +233,11 @@ footer nav ul {
 }
 
 /***Page de login***/
-.logins {
-	display: none;
-}
-.logout {
-	display: none;
+.connexion-active {
+	display:  flex;
+ 	justify-content:  center;
+	flex-direction:  column;
+ 	height:  100vh;
 }
 .visible-form {
 	display: flex;

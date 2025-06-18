@@ -1,8 +1,8 @@
 /**************************************/
 /* 1. Variable globales + fetch init */
 /**************************************/
-
-const isAdmin = window.localStorage.getItem("isAdmin") === "true";
+const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
+// const isAdmin = window.localStorage.getItem("isAdmin") === "true";
 const token = window.localStorage.getItem("token");
 let data = [];
 
@@ -35,7 +35,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   /* Token stoké dans le localeStorage */
 
   console.log("Token", token);
-  console.log("Admin :", isAdmin);
 
   /* Récupération du tableau data avec toutes les données de l'API */
 
@@ -52,7 +51,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   /* Si admin fonction pour ajouter et supprimer des travaux */
 
   if (isAdmin) {
-    console.log("Bienvenue admin :", isAdmin);
+    console.log("Bienvenue admin");
 
     /* Préparation de la page admin et mode édition */
 
@@ -99,7 +98,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
       const modal1 = document.createElement("aside");
       modal1.addEventListener("click", function (event) {
-        deleteWorks();
+        deleteWorks(event);
       });
       modal1.classList.add("styleModale");
       modal1.innerHTML = `<div class="modal-gallery-view">
@@ -155,7 +154,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       document.body.appendChild(overlay);
       document.body.appendChild(modal1);
 
-      genereWorksGallery(data);
+      // genereWorksGallery(data);
       changeViewModal();
       remplirSelectCategorie(data);
       inputFile();
@@ -181,16 +180,24 @@ document.addEventListener("DOMContentLoaded", async function () {
       genereWorks(data, ".modal-gallery");
     });
   } else {
-    console.log("Bienvenue utilisateur :");
+    console.log("Bienvenue utilisateur");
   }
 });
 
+/**************************************/
+/* 3 . Fonction réutilisable */
+/**************************************/
+
+// Fonction pour création des bouton filtre //
 function genereFiltre(worksCategory, data) {
-  //Création des boutons filtres ( balises du DOM )  //
+  // Création de la div pour les bouton filtre //
+
   const filtreClass = document.querySelector("#portfolio h2");
   const filtre = document.createElement("div");
   filtre.classList.add("btn-filtre");
   filtreClass.appendChild(filtre);
+
+  //Création des boutons filtres ( balises du DOM )  //
 
   const btnTous = document.createElement("button");
   btnTous.textContent = "Tous";
@@ -237,7 +244,7 @@ function genereFiltre(worksCategory, data) {
   btnFiltre.appendChild(btnHotel);
 }
 
-///// Fonction pour trier par categorie /////
+// Fonction pour trier par categorie //
 
 function trierCategory(data) {
   const worksCategory = {};
@@ -259,23 +266,21 @@ function trierCategory(data) {
   return worksCategory;
 }
 
-///// Fonction pour afficher les travaux (works) HOMEPAGE !! /////
+// Fonction pour afficher les travaux (works) HOMEPAGE ou MODAL  //
 
-function genereWorks(data) {
-  const mainGallery = document.querySelector(".gallery");
+function genereWorks(data, selector = ".gallery") {
+  const container = document.querySelector(selector);
+  const isModal = selector === ".modal-gallery";
+  container.innerHTML = "";
 
-  mainGallery.innerHTML = "";
-
-  // Boucle for qui parcours le tableau works //
   for (let i = 0; i < data.length; i++) {
     // Création des balises HTML //
 
     const figure = data[i];
 
-    // Rattachement au balise du DOM //
-
     const worksElement = document.createElement("figure");
     worksElement.id = data[i].id;
+    if (isModal) worksElement.style.position = "relative";
 
     const worksImg = document.createElement("img");
     worksImg.src = figure.imageUrl;
@@ -283,48 +288,37 @@ function genereWorks(data) {
     const worksTitle = document.createElement("figcaption");
     worksTitle.innerText = figure.title;
 
+    worksElement.appendChild(worksImg);
+    if (!isModal) {
+      worksElement.appendChild(worksTitle);
+    } else {
+      const deleteIcon = document.createElement("i");
+      deleteIcon.classList.add("fa-solid", "fa-trash-can");
+      deleteIcon.dataset.id = data[i].id;
+      worksElement.appendChild(deleteIcon);
+    }
+
     // Rattachement à la section du DOM //
 
-    mainGallery.appendChild(worksElement);
-    worksElement.appendChild(worksImg);
-    worksElement.appendChild(worksTitle);
+    container.appendChild(worksElement);
   }
 }
 
-///// Fonction pour afficher les travaux (works) MODAL !! /////
-function genereWorksGallery(data) {
-  const modalGallery = document.querySelector(".modal-gallery");
-  modalGallery.innerHTML = "";
-
-  for (let i = 0; i < data.length; i++) {
-    // Création des balises HTML //
-
-    const figure = data[i];
-
-    const worksElementModal = document.createElement("figure");
-    worksElementModal.id = "miniature_" + figure.id;
-    worksElementModal.style.position = "relative";
-
-    const worksImgModal = document.createElement("img");
-    worksImgModal.src = figure.imageUrl;
-
-    const deleteIcon = document.createElement("i");
-    deleteIcon.classList.add("fa-solid", "fa-trash-can");
-    deleteIcon.dataset.id = data[i].id;
-
-    worksElementModal.appendChild(worksImgModal);
-    worksElementModal.appendChild(deleteIcon);
-    modalGallery.appendChild(worksElementModal);
-  }
-}
+// Fonction pour remplir la sélection des catégorie pour ajouter un nouveau projet //
 
 function remplirSelectCategorie(data) {
   const selectElement = document.getElementById("categorie-select");
 
+  // Variable compteur pour arrêter la boucle si les 3 catégories sont existante //
+
   let compteur = 0;
+
+  // Boucle for qui parcours le tableau works //
 
   for (let i = 0; i < data.length; i++) {
     const categorie = data[i].category;
+
+    // IF si catégories non existantes alors création de la catégories dans le select HTML //
 
     if (categorie.id === 1 || categorie.id === 2 || categorie.id === 3) {
       const option = document.createElement("option");
@@ -341,10 +335,14 @@ function remplirSelectCategorie(data) {
   }
 }
 
-function deleteWorks() {
+// Fonction avec fetch DELETE pour supprimer un travaux a partir de la modal et mise a jour des données du tableau data //
+
+function deleteWorks(event) {
   const poubelleClick = event.target;
+
   if (poubelleClick.classList.contains("fa-trash-can")) {
     const dataId = poubelleClick.dataset.id;
+
     fetch(`http://localhost:5678/api/works/${dataId}`, {
       method: "DELETE",
       headers: {
@@ -361,8 +359,8 @@ function deleteWorks() {
         //document.querySelector(`[data-id = '${dataId}']`)?.remove();
         data = data.filter((item) => item.id !== Number(dataId));
 
-        genereWorks(data);
-        genereWorksGallery(data);
+        genereWorks(data, ".modal-gallery");
+        //genereWorksGallery(data, ".modal-gallery");
       } else {
         console.error("Erreur de fetch DELETE :", error);
       }
@@ -370,13 +368,15 @@ function deleteWorks() {
   }
 }
 
+// Fonction pour changer la vue de la modal //
+
 function changeViewModal() {
   const btnAjoutphoto = document.querySelector(".btnphoto");
   const galleryView = document.querySelector(".modal-gallery-view");
   const formView = document.querySelector(".modal-form-view");
   const btnRetour = document.querySelector(".btnretour");
 
-  // écouteur d'évenement pour bouton retour retour dans la modal //
+  // écouteur d'événement pour bouton retour et bouton ajouter photo pour changer vu de la modal //
 
   btnAjoutphoto.addEventListener("click", () => {
     galleryView.style.display = "none";
@@ -388,6 +388,8 @@ function changeViewModal() {
     formView.style.display = "none";
   });
 }
+
+// Fonction pour afficher l'image sélectionné dans le formulaire pour ajouter un nouveau projet //
 
 function inputFile() {
   const inputFile = document.querySelector("#image");
@@ -416,6 +418,8 @@ function inputFile() {
     }
   });
 }
+
+// Fonction avec fetch POST pour envoyer un nouveau projet a l'API et mise a jour du tableau data //
 
 function sendWorks() {
   // Récupération des données du formulaire (formData) pour requête POST API //
@@ -455,9 +459,10 @@ function closeModal() {
   modal1.remove();
   document.body.classList.remove("no-scroll");
 }
+// Fonction pour vérifier si le formulaire est bien rempli pour être envoyé vers l'API  //
 
 function checkForm() {
-  // Validation du formulaire pour envoyé un nouvau projet a l'API //
+  // Validation du formulaire pour envoyé un nouveau projet a l'API //
 
   const form = document.querySelector("#addphoto");
   const validColor = document.querySelector(".btn-valider");

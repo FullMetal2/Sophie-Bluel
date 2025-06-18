@@ -18,10 +18,10 @@ async function getWorks() {
       "Transformation de la réponse API en tableau utilisable en JS",
       works
     ); // works = tableau de données (Works) //
-    return works; /* a voir !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+    return works;
   } catch (error) {
     console.error("Erreur lors de la récupération des travaux :", error);
-    return []; /* a voir !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+    return [];
   }
 }
 

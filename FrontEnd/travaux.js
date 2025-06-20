@@ -2,7 +2,6 @@
 /* 1. Variable globales + fetch init */
 /**************************************/
 const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
-// const isAdmin = window.localStorage.getItem("isAdmin") === "true";
 const token = window.localStorage.getItem("token");
 let data = [];
 
@@ -356,11 +355,10 @@ function deleteWorks(event) {
         console.log(`Travail ID ${dataId} supprimé avec succèes`);
         poubelleClick.closest("figure")?.remove();
 
-        //document.querySelector(`[data-id = '${dataId}']`)?.remove();
         data = data.filter((item) => item.id !== Number(dataId));
 
         genereWorks(data, ".modal-gallery");
-        //genereWorksGallery(data, ".modal-gallery");
+        genereWorks(data);
       } else {
         console.error("Erreur de fetch DELETE :", error);
       }

@@ -92,7 +92,9 @@ function login(dataObject) {
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error("Problème avec la requête");
+        throw new Error(
+          "Problème avec la requête (code " + response.status + " )"
+        );
       }
       return response.json();
     })

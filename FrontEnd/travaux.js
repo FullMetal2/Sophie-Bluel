@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     editionModeBar.appendChild(blackHighBar);
 
     blackHighBar.innerHTML = `<div class="high-bar">
-                                    <sapn class="iconHeader"><i class="fa-solid fa-pen-to-square"></i></sapn>
+                                    <span class="iconHeader"><i class="fa-solid fa-pen-to-square"></i></span>
                                     <div>Mode édition</div>  
                                 </div>`;
     header.style.marginTop = "100px";
@@ -205,42 +205,19 @@ function genereFiltre(worksCategory, data) {
     document.querySelector(".gallery").innerHTML = "";
     genereWorks(data, ".gallery");
   });
+  filtre.appendChild(btnTous);
 
-  const btnObjet = document.createElement("button");
-  btnObjet.textContent = "Objets";
-  btnObjet.addEventListener("click", function () {
-    const categoryId = 1;
-    console.log("Afficher la catégorie objets");
-    console.log(worksCategory[categoryId]);
-    document.querySelector(".gallery").innerHTML = "";
-    genereWorks(worksCategory[categoryId].item);
-  });
+  for (const categoryId in worksCategory) {
+    const category = worksCategory[categoryId];
+    const btn = document.createElement("button");
+    btn.textContent = category.name;
 
-  const btnAppart = document.createElement("button");
-  btnAppart.textContent = "Appartements";
-  btnAppart.addEventListener("click", function () {
-    const categoryId = 2;
-    console.log("Afficher la catégorie appartements");
-    console.log(worksCategory[categoryId]);
-    document.querySelector(".gallery").innerHTML = "";
-    genereWorks(worksCategory[categoryId].item);
-  });
-
-  const btnHotel = document.createElement("button");
-  btnHotel.textContent = "Hôtels & Restaurants";
-  btnHotel.addEventListener("click", function () {
-    const categoryId = 3;
-    console.log("Afficher la catégorie hôtels & restaurants");
-    console.log(worksCategory[categoryId]);
-    document.querySelector(".gallery").innerHTML = "";
-    genereWorks(worksCategory[categoryId].item);
-  });
-
-  const btnFiltre = document.querySelector(".btn-filtre");
-  btnFiltre.appendChild(btnTous);
-  btnFiltre.appendChild(btnObjet);
-  btnFiltre.appendChild(btnAppart);
-  btnFiltre.appendChild(btnHotel);
+    btn.addEventListener("click", function () {
+      document.querySelector(".gallery").innerHTML = "";
+      genereWorks(category.item, ".gallery");
+    });
+    filtre.appendChild(btn);
+  }
 }
 
 // Fonction pour trier par categorie //
